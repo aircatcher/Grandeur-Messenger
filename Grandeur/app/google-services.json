@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "138977288131",
+    "firebase_url": "https://grandeur-fb0de.firebaseio.com",
+    "project_id": "grandeur-fb0de",
+    "storage_bucket": "grandeur-fb0de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138977288131:android:20e1a4bf828681a8",
+        "android_client_info": {
+          "package_name": "xyz.grand.grandeur"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "138977288131-cgit0tn4dte1dvi721du29ibso347uld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyz.grand.grandeur",
+            "certificate_hash": "57738ecd40ffa41c133893ba1d22dd802c025b7c"
+          }
+        },
+        {
+          "client_id": "138977288131-7ahvcomtrmf4o4tspkckstq5agb2ecq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-9RV1VLl-C7d42FG2hNCJfTkFkHd87xI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "138977288131-7ahvcomtrmf4o4tspkckstq5agb2ecq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
