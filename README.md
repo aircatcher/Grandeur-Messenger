@@ -10,6 +10,6 @@ Grandeur is a messaging app that is "simplicity" oriented.
 </ul>
 <i>Note: No features yet, just design</i>
 
-<b>Team:</b>
+<b>Team:</b><br/>
 Angga Putra - <br/>
 Ferick Andrew - 1801433296
