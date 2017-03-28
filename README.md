@@ -9,3 +9,7 @@ Grandeur is a messaging app that is "simplicity" oriented.
   <li>Redesigned MainActivity with Tabbed Navigation, that is including <i>Friends, Chat, and Timeline</i></li>
 </ul>
 <i>Note: No features yet, just design</i>
+
+<b>Team:</b>
+Angga Putra - 
+Ferick Andrew - 1801433296
