@@ -23,6 +23,13 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
 
+    <string name="timeline_hint">Describe your moment ...</string>
+    <string name="timeline_url_hint">Add a URL  >>></string>
+    <string name="message_hint">Type a message ...</string>
+
+    <!-- Firebase AdMob -->
+    <string name="banner_ad_unit_id">Advertisement</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
@@ -33,8 +40,8 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
     <string name="title_activity_signup">Sign in</string>
+    <string name="title_activity_post_timeline">PostTimeline</string>
 </resources>

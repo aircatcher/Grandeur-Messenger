@@ -1,6 +1,7 @@
 package xyz.grand.grandeur;
 
 import android.content.Intent;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,10 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.firebase.ui.database.FirebaseListAdapter;
 
+public class MainActivity extends AppCompatActivity
+{
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -60,16 +65,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
     }
 
 
@@ -174,8 +169,9 @@ public class MainActivity extends AppCompatActivity {
                     return "CHAT";
                 case 2:
                     return "TIMELINE";
+                default:
+                    return null;
             }
-            return null;
         }
     }
 }

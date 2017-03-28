@@ -1,5 +1,7 @@
 package xyz.grand.grandeur;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,6 +58,23 @@ public class FragmentChat extends Fragment
         else { return false; }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SIGN_IN_REQUEST_CODE)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                Snackbar.make(rl_chat, "Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
+                displayChatMessage();
+            }
+            else{
+                Snackbar.make(rl_chat, "We couldn't sign you in.Please try again later", Snackbar.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        }
+    }
+
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 //    {
@@ -63,29 +82,12 @@ public class FragmentChat extends Fragment
 //    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_REQUEST_CODE)
-        {
-            if(resultCode == RESULT_OK)
-            {
-                Snackbar.make(rl_chat, "Successfully signed in! \n Welcome, ", Snackbar.LENGTH_SHORT).show();
-                displayChatMessage();
-            }
-            else
-            {
-                Snackbar.make(rl_chat, "Unable to sign you in, \n Please try again later.", Snackbar.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
+
+        // Message Contents on Chat Tab
         View fragView = inflater.inflate(R.layout.fragment_chat, container, false);
 
         msgList = (ListView) fragView.findViewById(R.id.message_list);
@@ -96,29 +98,15 @@ public class FragmentChat extends Fragment
             public void onClick(View v) {
                 EditText input_message = (EditText) v.findViewById(R.id.input_message);
                 FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(input_message.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-                input_message.setText("");
             }
         });
 
-        // Check if not signed in
-        if(FirebaseAuth.getInstance().getCurrentUser() == null)
-        {
-//            Intent authUI = new Intent(this.getActivity(), LoginActivity.class);
-//            startActivityForResult(authUI, SIGN_IN_REQUEST_CODE);
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
-        }
-        else
-        {
-            Snackbar.make(rl_chat, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
-            //Load content
-            displayChatMessage();
-        }
         return fragView;
     }
 
     private void displayChatMessage()
     {
-        //msgList = (ListView) getView().findViewById(R.id.message_list);  //This returns null reference
+        //msgList = (ListView) getView().findViewById(R.id.message_list);  //This returns null reference, so put it on the onCreateView instead
         adapter = new FirebaseListAdapter<ChatMessage>(this.getActivity(), ChatMessage.class, R.layout.list_chat_item, FirebaseDatabase.getInstance().getReference())
         {
             @Override
@@ -133,7 +121,6 @@ public class FragmentChat extends Fragment
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
                 messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
-
             }
         };
         msgList.setAdapter(adapter);
