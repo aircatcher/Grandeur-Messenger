@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -73,7 +74,7 @@ public class FragmentChat extends Fragment
         // Message Contents on Chat Tab
         View fragView = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        msgList = (ListView) fragView.findViewById(R.id.message_list);
+        msgList = (ListView) fragView.findViewById(R.id.message_listview);
         rl_chat = (RelativeLayout) fragView.findViewById(R.id.fragment_chat);
         fab = (FloatingActionButton) fragView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -84,13 +85,30 @@ public class FragmentChat extends Fragment
             }
         });
 
+
+
+        // Check if not signed in
+        if(FirebaseAuth.getInstance().getCurrentUser() == null)
+        {
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+        }
+        else
+        {
+            // Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
+            //Load content
+            displayChatMessage();
+            //AlertDialog alertDialog = alertDialogBuilder.create();
+            //alertDialog.show();
+        }
         return fragView;
     }
 
     private void displayChatMessage()
     {
         //msgList = (ListView) getView().findViewById(R.id.message_list);  //This returns null reference, so put it on the onCreateView instead
-        adapter = new FirebaseListAdapter<ChatMessage>(this.getActivity(), ChatMessage.class, R.layout.list_chat_item, FirebaseDatabase.getInstance().getReference())
+//        String[] chatItems = {"test1", "test2", "test3"};
+//        ArrayAdapter<String> messageListViewAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_chat_item, chatItems);
+        adapter = new FirebaseListAdapter<ChatMessage>(getActivity(), ChatMessage.class, R.layout.fragment_chat, FirebaseDatabase.getInstance().getReference())
         {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {

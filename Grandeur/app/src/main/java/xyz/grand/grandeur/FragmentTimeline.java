@@ -83,13 +83,26 @@ public class FragmentTimeline extends Fragment
             }
         });
 
+        // Check if not signed in
+        if(FirebaseAuth.getInstance().getCurrentUser() == null)
+        {
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+        }
+        else
+        {
+            // Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
+            //Load content
+            displayTimeline();
+            //AlertDialog alertDialog = alertDialogBuilder.create();
+            //alertDialog.show();
+        }
         return fragView;
     }
 
     private void displayTimeline()
     {
         // tmlnList = (ListView) getView().findViewById(R.id.timeline_list);  //This returns null reference, so put it on the onCreateView instead
-        adapter = new FirebaseListAdapter<TimelineList>(this.getActivity(), TimelineList.class, R.layout.list_timeline_item, FirebaseDatabase.getInstance().getReference())
+        adapter = new FirebaseListAdapter<TimelineList>(this.getActivity(), TimelineList.class, R.layout.fragment_timeline, FirebaseDatabase.getInstance().getReference())
         {
             @Override
             protected void populateView(View v, TimelineList model, int position)

@@ -94,10 +94,10 @@ public class FragmentFriends extends Fragment
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
         final TextView popupText = new TextView(this.getActivity());
         popupText.setPadding(5, 5, 5, 5);
-        String infoAlert = "Please sign out after this session before closing the app just for now.\nTemporary issue.";
-        popupText.setTextSize(19);
+        //String infoAlert = "Please sign out after this session before closing the app just for now.\nTemporary issue.";
+        popupText.setTextSize(18);
         alertDialogBuilder.setView(popupText);
-        popupText.setText(infoAlert);
+        //popupText.setText(infoAlert);
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int id) {}
@@ -122,7 +122,7 @@ public class FragmentFriends extends Fragment
     private void displayFriendList()
     {
         //frndList = (ListView) getView().findViewById(R.id.friend_list);   //This returns null reference, so put it on the onCreateView instead
-        adapter = new FirebaseListAdapter<FriendList>(this.getActivity(), FriendList.class, R.layout.list_friend_item, FirebaseDatabase.getInstance().getReference())
+        adapter = new FirebaseListAdapter<FriendList>(this.getActivity(), FriendList.class, R.layout.fragment_friends, FirebaseDatabase.getInstance().getReference())
         {
             @Override
             protected void populateView(View v, FriendList model, int position) {
