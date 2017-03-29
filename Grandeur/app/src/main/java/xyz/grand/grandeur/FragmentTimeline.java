@@ -64,23 +64,6 @@ public class FragmentTimeline extends Fragment
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_REQUEST_CODE)
-        {
-            if(resultCode == RESULT_OK)
-            {
-                Snackbar.make(rl_timeline, "Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
-                displayTimeline();
-            }
-            else{
-                Snackbar.make(rl_timeline, "We couldn't sign you in.Please try again later", Snackbar.LENGTH_SHORT).show();
-                getActivity().finish();
-            }
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {

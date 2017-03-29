@@ -46,7 +46,6 @@ public class FragmentFriends extends Fragment
     private FirebaseListAdapter<FriendList> adapter;
     RelativeLayout rl_friends;
     ListView frndList;
-    FloatingActionButton fab;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -72,11 +71,11 @@ public class FragmentFriends extends Fragment
         {
             if(resultCode == RESULT_OK)
             {
-                Snackbar.make(rl_friends, "Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(rl_friends, "Successfully signed in.Welcome!", Snackbar.LENGTH_SHORT).setDuration(5000).show();
                 displayFriendList();
             }
             else{
-                Snackbar.make(rl_friends, "We couldn't sign you in.Please try again later", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(rl_friends, "We couldn't sign you in. Please try again later", Snackbar.LENGTH_LONG).setDuration(5000).show();
                 getActivity().finish();
             }
         }
@@ -88,10 +87,12 @@ public class FragmentFriends extends Fragment
     {
         setHasOptionsMenu(true);
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
+        frndList = (ListView) fragView.findViewById(R.id.friend_list);
+        rl_friends = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
 
         // Show Popup Alert
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        final TextView popupText = new TextView(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
+        final TextView popupText = new TextView(this.getActivity());
         popupText.setPadding(5, 5, 5, 5);
         String infoAlert = "Please sign out after this session before closing the app just for now.\nTemporary issue.";
         popupText.setTextSize(19);
@@ -102,10 +103,6 @@ public class FragmentFriends extends Fragment
             public void onClick(DialogInterface dialog, int id) {}
         });
 
-        // Show friend list
-        frndList = (ListView) fragView.findViewById(R.id.friend_list);
-        rl_friends = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
-
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
         {
@@ -113,15 +110,12 @@ public class FragmentFriends extends Fragment
         }
         else
         {
-            Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
-            displayFriendList();
+            // Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
             //Load content
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+            displayFriendList();
+            //AlertDialog alertDialog = alertDialogBuilder.create();
+            //alertDialog.show();
         }
-
-
-
         return fragView;
     }
 

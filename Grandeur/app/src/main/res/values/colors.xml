@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorPrimaryDark">#D32F2F</color>
-    <color name="colorAccent">#FF8A80</color>
+    <color name="colorPrimary">#ff353b</color>
+    <color name="colorPrimaryDark">#fd0113</color>
+    <color name="colorAccent">#00DC55</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
-    <color name="bg_screen2">#20d2bb</color>
+    <color name="bg_screen2">#00db55</color>
     <color name="bg_screen3">#3395ff</color>
     <color name="bg_screen4">#c873f4</color>
 

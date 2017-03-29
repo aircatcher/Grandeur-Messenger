@@ -1,5 +1,7 @@
 package xyz.grand.grandeur;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -19,11 +21,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -43,7 +49,8 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         //if()
             //setContentView(R.layout.activity_login);
@@ -62,11 +69,11 @@ public class MainActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        // Set icons on the tabs
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
