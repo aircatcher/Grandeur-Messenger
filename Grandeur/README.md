@@ -16,7 +16,7 @@ Grandeur is a messaging app that is "simplicity" oriented.
 
 <b>Note:</b> 
 <ul>
-  <li>No features yet, just design</li>
+  <li>Features are added, but not functioning properly yet</li>
   <li><strike>If you encounter "APP has stopped" error, please clear this app's data.</strike></li>
 </ul>
 
