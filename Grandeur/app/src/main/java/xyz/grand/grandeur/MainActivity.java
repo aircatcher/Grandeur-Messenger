@@ -1,35 +1,23 @@
 package xyz.grand.grandeur;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.CoordinatorLayout;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import xyz.grand.grandeur.Fragments.FragmentChat;
+import xyz.grand.grandeur.Fragments.FragmentFriends;
+import xyz.grand.grandeur.Fragments.FragmentTimeline;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -52,10 +40,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //if()
-            //setContentView(R.layout.activity_login);
-        //else
-            setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,10 +54,39 @@ public class MainActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        // Set icons on the tabs
+
+        // Tabs icons, texts, and colors
+        tabLayout.getTabAt(0).setText("FRIENDS");
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account);
+        tabLayout.getTabAt(1).setText("CHAT");
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer);
+        tabLayout.getTabAt(2).setText("TIMELINE");
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day);
+
+        tabLayout.addOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                        int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.tabSelected);
+                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        super.onTabUnselected(tab);
+                        int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.tabUnselected);
+                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        super.onTabReselected(tab);
+                    }
+                }
+        );
+        tabLayout.setTabTextColors(Color.parseColor("#FFFFFF"), Color.parseColor("#FF5252"));
     }
 
     @Override
@@ -91,6 +105,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settings = new Intent(this, SettingsActivity.class);
+            startActivity(settings);
             return true;
         }
 
@@ -143,6 +159,9 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
+        public int getCount() { return 3; } // Show 3 total pages.
+
+        @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
@@ -161,24 +180,18 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "FRIENDS";
-                case 1:
-                    return "CHAT";
-                case 2:
-                    return "TIMELINE";
-                default:
-                    return null;
-            }
-        }
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            switch (position) {
+//                case 0:
+//                    return "FRIEND";
+//                case 1:
+//                    return "CHAT";
+//                case 2:
+//                    return "TIMELINE";
+//                default:
+//                    return null;
+//            }
+//        }
     }
 }

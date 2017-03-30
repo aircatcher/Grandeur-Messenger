@@ -1,4 +1,4 @@
-package xyz.grand.grandeur;
+package xyz.grand.grandeur.FragmentViews;
 
 import java.util.Date;
 
@@ -7,8 +7,7 @@ import java.util.Date;
  */
 
 public class ChatMessage {
-    private String messageText;
-    private String messageUser;
+    private String messageText, messageUser;
     private long messageTime;
 
     public ChatMessage(String messageText, String messageUser) {
@@ -17,8 +16,7 @@ public class ChatMessage {
         messageTime = new Date().getTime();
     }
 
-    public ChatMessage() {
-    }
+    public ChatMessage() {}
 
     public String getMessageText() {
         return messageText;

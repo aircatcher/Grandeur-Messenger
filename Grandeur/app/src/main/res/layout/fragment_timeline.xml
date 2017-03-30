@@ -19,23 +19,44 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="0dp"
-        android:paddingRight="0dp"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
-        android:id="@+id/fab"
+        android:id="@+id/fab_post_new_timeline"
         android:tint="@android:color/white"
         app:fabSize="mini"
+        android:layout_marginBottom="44dp"
+        android:layout_above="@+id/this_is_just_for_bottom_divider"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-    </android.support.design.widget.FloatingActionButton>
+        android:layout_alignParentEnd="true" />
 
     <ListView
-        android:id="@+id/timeline_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="2dp"
+        android:divider="@android:color/transparent"
+        android:id="@+id/timeline_list_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/this_is_just_for_divider"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/this_is_just_for_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
+        android:text=""
+        android:layout_above="@+id/this_is_just_for_bottom_divider"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="25dp" />
 
+    <TextView
+        android:id="@+id/this_is_just_for_bottom_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

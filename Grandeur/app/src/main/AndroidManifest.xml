@@ -24,7 +24,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_welcome" />
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme" />
@@ -34,7 +35,10 @@
         <activity
             android:name=".PostTimeline"
             android:label="@string/title_activity_post_timeline"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

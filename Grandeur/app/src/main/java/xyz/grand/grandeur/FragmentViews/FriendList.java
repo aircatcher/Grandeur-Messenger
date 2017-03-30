@@ -1,4 +1,4 @@
-package xyz.grand.grandeur;
+package xyz.grand.grandeur.FragmentViews;
 
 /**
  * Created by Ferick Andrew on Mar 22, 2017.

@@ -1,4 +1,4 @@
-package xyz.grand.grandeur;
+package xyz.grand.grandeur.FragmentViews;
 
 import java.util.Date;
 

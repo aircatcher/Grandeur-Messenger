@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ff353b</color> <!-- #ff353b A little bit brighter red than below -->
-    <color name="colorPrimaryDark">#fd0113</color> <!-- #fd0113 Dark Red -->
-    <color name="colorAccent">#00DC55</color>
+    <color name="colorPrimary">#795548</color> <!-- #ff353b A little bit brighter red than below -->
+    <color name="colorPrimaryDark">#5D4037</color> <!-- #fd0113 Dark Red -->
+    <color name="colorAccent">#FF5252</color>
+
+    <color name="tabUnselected">#FFFFFF</color>
+    <color name="tabSelected">#FF5252</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
@@ -21,8 +24,6 @@
     <color name="dot_light_screen2">#8cf9eb</color>
     <color name="dot_light_screen3">#93c6fd</color>
     <color name="dot_light_screen4">#e4b5fc</color>
-    <color name="foreground_material_light">#000000</color>
-    <color name="primary_text_default_material_light">#deffffff</color>
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>
