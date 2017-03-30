@@ -95,7 +95,7 @@ public class FragmentFriends extends Fragment
         setHasOptionsMenu(true);
 
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
-        frndList = (ListView) fragView.findViewById(R.id.friend_list);
+        frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
         rl_friends = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
 
         // Show Popup Alert
