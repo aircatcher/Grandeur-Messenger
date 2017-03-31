@@ -22,9 +22,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 
+import butterknife.ButterKnife;
+import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.SettingsActivity;
 import xyz.grand.grandeur.FragmentViews.TimelineList;
+import xyz.grand.grandeur.SettingsActivity;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,8 +38,9 @@ public class FragmentTimeline extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<TimelineList> adapter;
-    RelativeLayout rl_timeline;
+
     ListView tmlnList;
+    RelativeLayout rl_timeline;
     FloatingActionButton fab;
 
     @Override
@@ -61,7 +64,8 @@ public class FragmentTimeline extends Fragment
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Snackbar.make(rl_timeline, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-                    getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
                 }
             });
             return true;
@@ -82,7 +86,8 @@ public class FragmentTimeline extends Fragment
             else
             {
                 Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
-                getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                Intent login = new Intent(getActivity(), LoginActivity.class);
+                getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             }
         }
     }
@@ -92,13 +97,14 @@ public class FragmentTimeline extends Fragment
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
+        ButterKnife.bind(getActivity());
 
         // Contents on Timeline Tab
         View fragView = inflater.inflate(R.layout.fragment_timeline, container, false);
-
-        tmlnList = (ListView) fragView.findViewById(R.id.timeline_list_view);
         rl_timeline = (RelativeLayout) fragView.findViewById(R.id.fragment_timeline);
+        tmlnList = (ListView) fragView.findViewById(R.id.timeline_list_view);
         fab = (FloatingActionButton) fragView.findViewById(R.id.fab_post_new_timeline);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

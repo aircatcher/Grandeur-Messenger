@@ -28,7 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
 import xyz.grand.grandeur.FragmentViews.ChatMessage;
+import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
 
@@ -42,15 +44,14 @@ public class FragmentChat extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<ChatMessage> adapter;
-
-    private ListView msgListView;
     private ArrayAdapter<String> arrayAdapter;
     private ArrayList<String> chat_list = new ArrayList<>();
     private DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference().getRoot();
 
+    ListView msgListView;
     RelativeLayout rl_chat;
     EditText input_message;
-    FloatingActionButton fab;
+    FloatingActionButton fab_send_message;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -73,7 +74,8 @@ public class FragmentChat extends Fragment
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Snackbar.make(rl_chat, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-                    getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
                 }
             });
             return true;
@@ -102,7 +104,8 @@ public class FragmentChat extends Fragment
             else
             {
                 Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
-                getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                Intent login = new Intent(getActivity(), LoginActivity.class);
+                getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             }
         }
     }
@@ -112,19 +115,20 @@ public class FragmentChat extends Fragment
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
+        ButterKnife.bind(getActivity());
 
         // Message Contents on Chat Tab
         View fragView = inflater.inflate(R.layout.fragment_chat, container, false);
-
-        msgListView = (ListView) fragView.findViewById(R.id.message_list_view);
         rl_chat = (RelativeLayout) fragView.findViewById(R.id.fragment_chat);
+        msgListView = (ListView) fragView.findViewById(R.id.message_list_view);
         input_message = (EditText) fragView.findViewById(R.id.input_message);
-        fab = (FloatingActionButton) fragView.findViewById(R.id.fab_send_message);
+        fab_send_message = (FloatingActionButton) fragView.findViewById(R.id.fab_send_message);
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
         {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+            Intent login = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         }
         else
         {
@@ -135,7 +139,7 @@ public class FragmentChat extends Fragment
             //alertDialog.show();
         }
 
-        fab.setOnClickListener(new View.OnClickListener()
+        fab_send_message.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)

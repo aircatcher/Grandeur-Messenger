@@ -1,7 +1,5 @@
 package xyz.grand.grandeur.Fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +29,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import xyz.grand.grandeur.FragmentViews.FriendList;
+import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
 
@@ -44,8 +43,8 @@ public class FragmentFriends extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<FriendList> adapter;
-    RelativeLayout rl_friends;
     ListView frndList;
+    RelativeLayout rl_friends;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -62,7 +61,9 @@ public class FragmentFriends extends Fragment
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Snackbar.make(rl_friends, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-                    getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+//                  getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                    Intent login = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
                 }
             });
             return true;
@@ -83,7 +84,9 @@ public class FragmentFriends extends Fragment
             else
             {
                 Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
-                getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+//              getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+                Intent login = new Intent(getActivity(), LoginActivity.class);
+                getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             }
         }
     }
@@ -95,34 +98,23 @@ public class FragmentFriends extends Fragment
         setHasOptionsMenu(true);
 
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
-        frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
         rl_friends = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
+        frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
 
-        // Show Popup Alert
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
-        final TextView popupText = new TextView(this.getActivity());
-        popupText.setPadding(5, 5, 5, 5);
-        //String infoAlert = "Please sign out after this session before closing the app just for now.\nTemporary issue.";
-        popupText.setTextSize(18);
-        alertDialogBuilder.setView(popupText);
-        //popupText.setText(infoAlert);
-        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id) {}
-        });
+
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
         {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+//          getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+            Intent login = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         }
         else
         {
             // Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
             //Load content
             displayFriendList();
-            //AlertDialog alertDialog = alertDialogBuilder.create();
-            //alertDialog.show();
         }
         return fragView;
     }
