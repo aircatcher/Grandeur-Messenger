@@ -69,7 +69,7 @@
             android:layout_marginTop="10dip"
             android:background="@color/colorPrimary"
             android:text="@string/btn_login"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btn_login_with_providers"
@@ -78,7 +78,7 @@
             android:layout_marginTop="10dip"
             android:background="@color/com_facebook_blue"
             android:text="@string/btn_login_providers"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btn_reset_password"
@@ -87,7 +87,7 @@
             android:layout_marginTop="10dip"
             android:background="@color/colorAccent"
             android:text="@string/btn_forgot_password"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btn_signup"

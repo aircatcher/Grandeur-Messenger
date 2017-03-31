@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.FriendList;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
@@ -48,10 +49,16 @@ public class FragmentFriends extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_settings)
+        if(item.getItemId() == R.id.action_about)
+        {
+            Intent settings = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(settings);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_settings)
         {
             Intent settings = new Intent(getActivity(), SettingsActivity.class);
-            startActivityForResult(settings, 0);
+            getActivity().startActivity(settings);
             return true;
         }
         else if(item.getItemId() == R.id.action_sign_out)
@@ -61,7 +68,6 @@ public class FragmentFriends extends Fragment
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Snackbar.make(rl_friends, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-//                  getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
                     Intent login = new Intent(getActivity(), LoginActivity.class);
                     getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
                 }

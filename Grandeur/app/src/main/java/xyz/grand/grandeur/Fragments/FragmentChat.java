@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.ChatMessage;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
@@ -55,16 +56,16 @@ public class FragmentChat extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_settings)
+        if(item.getItemId() == R.id.action_about)
         {
-            AuthUI.getInstance().signOut(this.getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task)
-                {
-                    Intent settings = new Intent(getActivity(), SettingsActivity.class);
-                    getActivity().startActivity(settings);
-                }
-            });
+            Intent settings = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(settings);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_settings)
+        {
+            Intent settings = new Intent(getActivity(), SettingsActivity.class);
+            getActivity().startActivity(settings);
             return true;
         }
         else if(item.getItemId() == R.id.action_sign_out)

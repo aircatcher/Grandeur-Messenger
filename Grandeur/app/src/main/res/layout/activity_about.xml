@@ -16,8 +16,8 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="@drawable/ic_background_dark"
         android:gravity="center"
         android:orientation="vertical"
@@ -36,15 +36,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/email"
+            <TextView
+                android:id="@+id/show_app_version_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"
+                android:layout_marginTop="15dp"
+                android:text="App Version\n"
+                android:textAlignment="center"
+                android:textSize="18sp"
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white" />
+
+            <TextView
+                android:id="@+id/show_app_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white"
+                android:textSize="18sp" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -52,41 +63,43 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword"
+                android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white" />
+                android:textColorHint="@android:color/white"
+                android:visibility="invisible" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/sign_up_button"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:background="@color/colorAccent"
-            android:text="@string/sign_up_short"
-            android:textColor="@android:color/white" />
+            android:layout_marginTop="10dip"
+            android:textColor="@android:color/black"
+            android:visibility="invisible" />
 
         <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
-            android:background="@null"
-            android:text="@string/btn_link_to_login"
-            android:textAllCaps="false"
+            android:layout_marginTop="10dip"
+            android:textColor="@android:color/black"
+            android:visibility="invisible" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:visibility="invisible"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/btn_about_go_back"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:background="@color/colorAccent"
+            android:text="@string/btn_back"
             android:textColor="@color/white"
             android:textSize="15sp" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="38dip"
-            android:background="@null" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

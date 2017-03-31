@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.ButterKnife;
+import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.FragmentViews.TimelineList;
@@ -45,16 +46,16 @@ public class FragmentTimeline extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_settings)
+        if(item.getItemId() == R.id.action_about)
         {
-            AuthUI.getInstance().signOut(this.getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task)
-                {
-                    Intent settings = new Intent(getActivity(), SettingsActivity.class);
-                    getActivity().startActivity(settings);
-                }
-            });
+            Intent settings = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(settings);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_settings)
+        {
+            Intent settings = new Intent(getActivity(), SettingsActivity.class);
+            getActivity().startActivity(settings);
             return true;
         }
         else if(item.getItemId() == R.id.action_sign_out)
