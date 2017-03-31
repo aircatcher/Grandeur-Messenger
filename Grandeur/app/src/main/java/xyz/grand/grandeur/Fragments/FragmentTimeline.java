@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.ButterKnife;
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.LoginActivity;
+import xyz.grand.grandeur.PostTimeline;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.FragmentViews.TimelineList;
 import xyz.grand.grandeur.SettingsActivity;
@@ -109,8 +110,10 @@ public class FragmentTimeline extends Fragment
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                EditText input_message = (EditText) v.findViewById(R.id.timeline_content);
-//                FirebaseDatabase.getInstance().getReference().push().setValue(new TimelineList(input_message.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+                Intent newTimeline = new Intent(getActivity(), PostTimeline.class);
+                startActivity(newTimeline);
+//              EditText input_message = (EditText) v.findViewById(R.id.timeline_content);
+//              FirebaseDatabase.getInstance().getReference().push().setValue(new TimelineList(input_message.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getEmail()));
             }
         });
 

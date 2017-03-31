@@ -31,8 +31,7 @@ public class PostTimeline extends AppCompatActivity
 
         final TextView textURL = (TextView) findViewById(R.id.timeline_url);
         Button buttonAddURL = (Button) findViewById(R.id.button_add_url);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_create_post);
 
         // Show Popup Alert
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);

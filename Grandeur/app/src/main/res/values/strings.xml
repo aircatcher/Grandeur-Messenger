@@ -22,6 +22,7 @@
     <!-- Strings related to Chat Fragment -->
     <string name="timeline_hint">Describe your moment ...</string>
     <string name="timeline_url_hint">Add a URL  >>></string>
+    <string name="btn_add_url">Add URL</string>
     <string name="message_hint">Type the message ...</string>
 
     <!-- Firebase AdMob -->
