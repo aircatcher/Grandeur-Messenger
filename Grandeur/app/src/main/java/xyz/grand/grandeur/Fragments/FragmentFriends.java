@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,10 +16,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ import java.net.URL;
 
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.FriendList;
+import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
@@ -45,14 +47,20 @@ public class FragmentFriends extends Fragment
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<FriendList> adapter;
     ListView frndList;
-    RelativeLayout rl_friends;
+    RelativeLayout cl_login;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_about)
+        if(item.getItemId() == R.id.action_add_friend)
         {
-            Intent settings = new Intent(getActivity(), AboutActivity.class);
-            getActivity().startActivity(settings);
+            Intent searchFriend = new Intent(getActivity(), SearchFriendActivity.class);
+            getActivity().startActivity(searchFriend);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_about)
+        {
+            Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(aboutPage);
             return true;
         }
         else if(item.getItemId() == R.id.action_settings)
@@ -63,19 +71,23 @@ public class FragmentFriends extends Fragment
         }
         else if(item.getItemId() == R.id.action_sign_out)
         {
-            AuthUI.getInstance().signOut(this.getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            AuthUI.getInstance().signOut(getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task)
                 {
-                    Snackbar.make(rl_friends, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(cl_login, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
                     Intent login = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().finish();
                     getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+
                 }
             });
             return true;
         }
         else { return false; }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -84,15 +96,15 @@ public class FragmentFriends extends Fragment
         {
             if(resultCode == RESULT_OK)
             {
-                Toast.makeText(this.getActivity(), "Successfully signed in. Welcome!", Toast.LENGTH_LONG).show();
                 displayFriendList();
             }
             else
             {
-                Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
+//              Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
 //              getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
                 Intent login = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+                Snackbar.make(cl_login, "We couldn't sign you in. Please try again later.", Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -104,7 +116,7 @@ public class FragmentFriends extends Fragment
         setHasOptionsMenu(true);
 
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
-        rl_friends = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
+        cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
         frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
 
 

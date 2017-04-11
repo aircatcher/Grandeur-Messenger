@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.ChatMessage;
+import xyz.grand.grandeur.FragmentViews.FriendToChat;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
@@ -49,17 +50,23 @@ public class FragmentChat extends Fragment
     private ArrayList<String> chat_list = new ArrayList<>();
     private DatabaseReference dbRoot = FirebaseDatabase.getInstance().getReference().getRoot();
 
-    ListView msgListView;
+    ListView historyListView;
     RelativeLayout rl_chat;
     EditText input_message;
     FloatingActionButton fab_send_message;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_about)
+        if(item.getItemId() == R.id.action_new_chat)
         {
-            Intent settings = new Intent(getActivity(), AboutActivity.class);
-            getActivity().startActivity(settings);
+            Intent newChat = new Intent(getActivity(), FriendToChat.class);
+            getActivity().startActivity(newChat);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_about)
+        {
+            Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(aboutPage);
             return true;
         }
         else if(item.getItemId() == R.id.action_settings)
@@ -87,7 +94,7 @@ public class FragmentChat extends Fragment
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
 //    {
-//        inflater.inflate(R.menu.menu_main, menu);
+//        inflater.inflate(R.menu.menu_mainr, menu);
 //    }
 
     @Override
@@ -100,11 +107,10 @@ public class FragmentChat extends Fragment
         {
             if(resultCode == RESULT_OK)
             {
-                displayChatMessage();
+                displayChatHistoryLV();
             }
             else
             {
-                Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
                 Intent login = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             }
@@ -119,11 +125,10 @@ public class FragmentChat extends Fragment
         ButterKnife.bind(getActivity());
 
         // Message Contents on Chat Tab
-        View fragView = inflater.inflate(R.layout.fragment_chat, container, false);
+        View fragView = inflater.inflate(R.layout.list_chat_history_item, container, false);
         rl_chat = (RelativeLayout) fragView.findViewById(R.id.fragment_chat);
-        msgListView = (ListView) fragView.findViewById(R.id.message_list_view);
+        historyListView = (ListView) fragView.findViewById(R.id.chat_history_list_view);
         input_message = (EditText) fragView.findViewById(R.id.input_message);
-        fab_send_message = (FloatingActionButton) fragView.findViewById(R.id.fab_send_message);
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
@@ -133,36 +138,49 @@ public class FragmentChat extends Fragment
         }
         else
         {
-            Toast.makeText(this.getActivity(), "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), Toast.LENGTH_LONG).show();
             //Load content
-            displayChatMessage();
+            displayChatHistoryLV();
             //AlertDialog alertDialog = alertDialogBuilder.create();
             //alertDialog.show();
         }
 
-        fab_send_message.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                // Read the input field and push a new instance
-                // of ChatMessage to the Firebase database
-                FirebaseDatabase.getInstance().getReference().push()
-                        .setValue(new ChatMessage(input_message.getText().toString(),
-                                FirebaseAuth.getInstance().getCurrentUser().getDisplayName())
-                        );
-
-                // Clear the input
-                input_message.setText("");
-            }
-        });
-
         return fragView;
     }
 
-    private void displayChatMessage()
+//    private void displayChatHistoryLV()
+//    {
+//        /**
+//         *  This is just a testing so I can get to know more to the ListView layout
+//         **/
+//        final String[] chatHistoryFriendName = {"friend1", "friend2", "friend3", "friend4", "friend5", "friend6", "friend7", "friend8", "friend9", "friend10", "friend11", "friend12", "friend13", "friend14", "friend15"};
+//        final String[] chatHistoryMessages = {"Hello!", "How are you doing?", "Hi there", "What are the assignments?", "Sure I hope so", "Why not", "Yes I assume that you do that", "This is a message", "Can I call you now?", "Testing testing 123", "testtesttest", "setsetset set", "yes and no", "hahaha", "weeeeee"};
+//
+//        adapter = new FirebaseListAdapter<ChatMessage>(getActivity(), ChatMessage.class, R.layout.list_chat_history_item, FirebaseDatabase.getInstance().getReference())
+//        {
+//            @Override
+//            protected void populateView(View v, ChatMessage model, int position) {
+//
+//                //Get references to the views of list_chat_item.xml
+//                TextView messageText = (TextView) v.findViewById(R.id.message_text);
+//                TextView messageUser = (TextView) v.findViewById(R.id.message_user);
+//                TextView messageTime = (TextView) v.findViewById(R.id.message_time);
+//
+//                int i = 0;
+//                while(chatHistoryFriendName != null)
+//                {
+//                    messageUser.setText(chatHistoryFriendName[i]);
+//                    messageText.setText(chatHistoryMessages[i]);
+//                    messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
+//                    i++;
+//                }
+//            }
+//        };
+//        historyListView.setAdapter(adapter);
+//    }
+
+    private void displayChatHistoryLV()
     {
-        adapter = new FirebaseListAdapter<ChatMessage>(getActivity(), ChatMessage.class, R.layout.list_chat_item, FirebaseDatabase.getInstance().getReference())
+        adapter = new FirebaseListAdapter<ChatMessage>(getActivity(), ChatMessage.class, R.layout.list_chat_history_item, FirebaseDatabase.getInstance().getReference())
         {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
@@ -172,11 +190,15 @@ public class FragmentChat extends Fragment
                 TextView messageUser = (TextView) v.findViewById(R.id.message_user);
                 TextView messageTime = (TextView) v.findViewById(R.id.message_time);
 
+                if(messageText == null)
+                {
+                    messageText.setText("This lab is lonely\nTo start a chat, go to Friends tab, and select one of your friend.");
+                }
                 messageText.setText(model.getMessageText());
                 messageUser.setText(model.getMessageUser());
                 messageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessageTime()));
             }
         };
-        msgListView.setAdapter(adapter);
+//        historyListView.setAdapter(adapter);
     }
 }

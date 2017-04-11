@@ -33,7 +33,7 @@
             android:name=".SignupActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".PostTimeline"
+            android:name=".FragmentViews.PostTimeline"
             android:label="@string/title_activity_post_timeline"
             android:theme="@style/AppTheme" />
         <activity android:name=".ResetPasswordActivity" />
@@ -45,9 +45,13 @@
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.myfirstapp.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
-        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".FragmentViews.ChatSession" />
+        <activity android:name=".Fragments.FragmentGPlus" />
+        <activity android:name=".FragmentViews.SearchFriendActivity" />
+        <activity android:name=".FragmentViews.FriendToChat"></activity>
     </application>
 
 </manifest>

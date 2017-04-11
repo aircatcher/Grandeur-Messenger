@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#795548</color> <!-- #ff353b A little bit brighter red than below -->
-    <color name="colorPrimaryDark">#5D4037</color> <!-- #fd0113 Dark Red -->
+    <color name="colorPrimary">#a1887f</color> <!-- #ff353b A little bit brighter red than below -->
+    <color name="colorPrimaryDark">#795548</color> <!-- #fd0113 Dark Red -->
     <color name="colorAccent">#FF5252</color>
 
     <color name="tabUnselected">#FFFFFF</color>

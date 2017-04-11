@@ -6,30 +6,22 @@
     android:weightSum="1">
 
     <TextView
-        android:id="@+id/message_user"
+        android:id="@+id/ch_message_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="normal|bold" />
 
     <TextView
-        android:id="@+id/message_time"
+        android:id="@+id/ch_message_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginTop="-18dp" />
 
     <TextView
-        android:id="@+id/message_text"
+        android:id="@+id/ch_message_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5sp"
-        android:background="@drawable/bubble"
-        android:paddingEnd="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="5dp"
-        android:paddingStart="10dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:textColor="@color/tw__composer_black"

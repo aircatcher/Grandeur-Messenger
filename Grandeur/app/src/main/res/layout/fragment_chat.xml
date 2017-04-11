@@ -10,52 +10,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="xyz.grand.grandeur.MainActivity">
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@drawable/ic_send"
-        android:id="@+id/fab_send_message"
-        android:tint="@android:color/white"
-        app:fabSize="mini"
-        android:layout_marginBottom="44dp"
-        android:layout_above="@+id/this_is_just_for_bottom_divider"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/message_hint"
-        android:id="@+id/input_message"
-        android:layout_alignTop="@+id/fab_send_message"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/fab_send_message"
-        android:layout_toStartOf="@+id/fab_send_message" />
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:dividerHeight="2dp"
         android:divider="@android:color/transparent"
-        android:id="@+id/message_list_view"
+        android:id="@+id/chat_history_list_view"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/this_is_just_for_divider" />
+        android:layout_above="@+id/_bottom_divider" />
 
     <TextView
-        android:id="@+id/this_is_just_for_divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_above="@+id/fab_send_message"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/this_is_just_for_bottom_divider"
+        android:id="@+id/_bottom_divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

@@ -1,4 +1,4 @@
-package xyz.grand.grandeur;
+package xyz.grand.grandeur.FragmentViews;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
+
+import xyz.grand.grandeur.R;
 
 import static xyz.grand.grandeur.R.id.button;
 
@@ -42,11 +44,18 @@ public class PostTimeline extends AppCompatActivity
 
         alertDialogBuilder.setCancelable(false).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
         {
-            public void onClick(DialogInterface dialog, int id) {}
+            public void onClick(DialogInterface dialog, int id)
+            {
+                dialog.dismiss();
+            }
         });
         alertDialogBuilder.setCancelable(false).setPositiveButton("Confirm", new DialogInterface.OnClickListener()
         {
-            public void onClick(DialogInterface dialog, int id) { textURL.setText((CharSequence) popupAddURL); }
+            public void onClick(DialogInterface dialog, int id)
+            {
+                textURL.setText((CharSequence) popupAddURL);
+                dialog.dismiss();
+            }
         });
 
         // Add URL to the timeline post

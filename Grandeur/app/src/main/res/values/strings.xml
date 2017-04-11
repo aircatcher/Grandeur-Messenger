@@ -2,6 +2,8 @@
     <string name="app_name">Grandeur</string>
     <string name="title_activity_welcome"><font color='white'>Grandeur</font></string>
 
+    <string name="loading">Loading …</string>
+
     <!-- Strings related to Welcome Sliders -->
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
@@ -20,10 +22,10 @@
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
     <!-- Strings related to Chat Fragment -->
-    <string name="timeline_hint">Describe your moment ...</string>
+    <string name="timeline_hint">Describe your moment …</string>
     <string name="timeline_url_hint">Add a URL  >>></string>
     <string name="btn_add_url">Add URL</string>
-    <string name="message_hint">Type the message ...</string>
+    <string name="message_hint">Type the message …</string>
 
     <!-- Firebase AdMob -->
     <string name="banner_ad_unit_id">Advertisement</string>
@@ -36,9 +38,13 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">Login</string>
-    <string name="btn_login_providers">Or login with ...</string>
+    <string name="btn_login_providers">Or login with …</string>
     <string name="btn_forgot_password">Forgot your Password?</string>
     <string name="btn_link_to_register">No account yet? Sign up here</string>
+    <string name="signed_in_fmt">Signed in as: %s</string>
+
+    <!-- Strings related to Sign out -->
+    <string name="signed_out">You have been signed out</string>
 
     <!-- Strings related to Signup -->
     <string name="sign_up_short">Sign Up</string>
@@ -50,7 +56,13 @@
     <string name="btn_reset_password">Reset Password</string>
     <string name="btn_back">Go back</string>
 
+    <!-- Strings related to Friends -->
+    <string name="hint_search_friend">Type your friend\'s name or ID</string>
+
     <!-- Strings related to Menu Inflater -->
+    <string name="action_add_friend">Add a Friend</string>
+    <string name="action_new_chat">New chat</string>
+    <string name="action_post_timeline">Post a timeline</string>
     <string name="action_about">About</string>
     <string name="action_settings">Settings</string>
     <string name="action_sign_out">Sign out</string>

@@ -20,12 +20,13 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.ButterKnife;
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.LoginActivity;
-import xyz.grand.grandeur.PostTimeline;
+import xyz.grand.grandeur.FragmentViews.PostTimeline;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.FragmentViews.TimelineList;
 import xyz.grand.grandeur.SettingsActivity;
@@ -47,10 +48,16 @@ public class FragmentTimeline extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_about)
+        if(item.getItemId() == R.id.action_post_timeline)
         {
-            Intent settings = new Intent(getActivity(), AboutActivity.class);
-            getActivity().startActivity(settings);
+            Intent postTL = new Intent(getActivity(), PostTimeline.class);
+            getActivity().startActivity(postTL);
+            return true;
+        }
+        else if(item.getItemId() == R.id.action_about)
+        {
+            Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
+            getActivity().startActivity(aboutPage);
             return true;
         }
         else if(item.getItemId() == R.id.action_settings)
@@ -82,12 +89,10 @@ public class FragmentTimeline extends Fragment
         {
             if(resultCode == RESULT_OK)
             {
-                Toast.makeText(this.getActivity(), "Successfully signed in. Welcome!", Toast.LENGTH_LONG).show();
                 displayTimeline();
             }
             else
             {
-                Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
                 Intent login = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             }
@@ -117,7 +122,20 @@ public class FragmentTimeline extends Fragment
             }
         });
 
-        displayTimeline();
+        // Check if not signed in
+        if(FirebaseAuth.getInstance().getCurrentUser() == null)
+        {
+            Intent login = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+        }
+        else
+        {
+            //Load content
+            displayTimeline();
+            //AlertDialog alertDialog = alertDialogBuilder.create();
+            //alertDialog.show();
+        }
+
         return fragView;
     }
 

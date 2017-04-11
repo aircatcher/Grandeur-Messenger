@@ -33,12 +33,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -48,5 +42,11 @@
         android:layout_margin="12dp"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

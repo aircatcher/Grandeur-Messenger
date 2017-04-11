@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,10 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
@@ -36,6 +30,7 @@ public class MainActivity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    TabLayout tabLayout;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         // Tabs icons, texts, and colors
@@ -71,6 +66,7 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
+                    int firstRun = 0;
 
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
@@ -83,7 +79,15 @@ public class MainActivity extends AppCompatActivity
                     public void onTabUnselected(TabLayout.Tab tab) {
                         super.onTabUnselected(tab);
                         int tabIconColor = ContextCompat.getColor(MainActivity.this, R.color.tabUnselected);
-                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                        if(firstRun == 0)
+                        {
+                            tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                        }
+                        else
+                        {
+                            tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                            tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                        }
                     }
 
                     @Override
@@ -98,31 +102,35 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        int tabPosition = tabLayout.getSelectedTabPosition();
+
+        if(tabPosition == 0) getMenuInflater().inflate(R.menu.menu_friend, menu);
+        else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
+        else if(tabPosition == 2) getMenuInflater().inflate(R.menu.menu_timeline, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent settings = new Intent(this, SettingsActivity.class);
-            startActivity(settings);
-            return true;
-        }
-        else if (id == R.id.action_about) {
-            Intent settings = new Intent(this, AboutActivity.class);
-            startActivity(settings);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            Intent settings = new Intent(this, SettingsActivity.class);
+//            startActivity(settings);
+//            return true;
+//        }
+//        else if (id == R.id.action_about) {
+//            Intent settings = new Intent(this, AboutActivity.class);
+//            startActivity(settings);
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     /**
      * A placeholder fragment containing a simple view.
