@@ -122,7 +122,6 @@ public class FragmentChat extends Fragment
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
-        ButterKnife.bind(getActivity());
 
         // Message Contents on Chat Tab
         View fragView = inflater.inflate(R.layout.list_chat_history_item, container, false);

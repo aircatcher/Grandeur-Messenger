@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Grandeur</string>
-    <string name="title_activity_welcome"><font color='white'>Grandeur</font></string>
+    <string name="title_activity_welcome">Grandeur</string>
 
     <string name="loading">Loading …</string>
 
@@ -33,7 +33,7 @@
     <!-- Strings related to login -->
     <string name="title_activity_post_timeline">PostTimeline</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="minimum_password">Minimum password is 6</string>
+    <string name="minimum_password">Minimum is 6 characters</string>
     <string name="auth_failed">Login failed, please try again later</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -137,4 +137,5 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="separator_string">or</string>
 </resources>

@@ -43,6 +43,13 @@
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id" />
 
+    <TextView
+        android:id="@+id/this_test"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_gravity="start|bottom"
+        android:text="" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#a1887f</color> <!-- #ff353b A little bit brighter red than below -->
-    <color name="colorPrimaryDark">#795548</color> <!-- #fd0113 Dark Red -->
+    <color name="colorPrimary">#D7CCC8</color> <!-- #ff353b A little bit brighter red than below -->
+    <color name="colorPrimaryDark">#5d4037</color> <!-- #fd0113 Dark Red -->
     <color name="colorAccent">#FF5252</color>
 
-    <color name="tabUnselected">#FFFFFF</color>
+    <color name="tabUnselected">#000</color>
     <color name="tabSelected">#FF5252</color>
 
     <!-- Screens background color-->
@@ -40,4 +40,8 @@
     </array>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="line_separator">#A0A0A0</color>
+    <color name="line_separator_dark">#283F43</color>
+    <color name="bright_foreground_light">#f30909</color>
 </resources>

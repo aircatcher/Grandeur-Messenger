@@ -14,13 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_settings"
+            android:titleTextColor="@color/black"
             android:layout_width="match_parent"
-            android:layout_marginStart="55dp"
-            android:layout_marginLeft="55dp"
+            android:layout_marginLeft="50dp"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -30,17 +30,18 @@
 
     <ImageView
         android:id="@+id/btn_settings_backToMenu"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
         android:layout_width="45dp"
         android:layout_height="45dp"
-
-        android:src="@drawable/ic_keyboard_arrow_left_black_24dp"
-        app:layout_anchor="@+id/include2" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:padding="12dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_arrow_back_black_24dp"
+        app:layout_anchor="@+id/include_content_settings" />
 
     <include
-        android:id="@+id/include2"
+        android:id="@+id/include_content_settings"
         layout="@layout/content_settings" />
 
 

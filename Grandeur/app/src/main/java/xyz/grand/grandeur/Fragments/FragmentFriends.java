@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
@@ -119,14 +120,13 @@ public class FragmentFriends extends Fragment
         cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
         frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
 
-
-
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
         {
 //          getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
             Intent login = new Intent(getActivity(), LoginActivity.class);
             getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+            Toast.makeText(getActivity(), "You're not yet signed in, please sign in first", Toast.LENGTH_LONG).show();
         }
         else
         {

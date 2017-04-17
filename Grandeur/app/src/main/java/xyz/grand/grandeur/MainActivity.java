@@ -1,9 +1,14 @@
 package xyz.grand.grandeur;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +18,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 
 import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
@@ -32,6 +36,9 @@ public class MainActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     TabLayout tabLayout;
 
+    private static final String PREFS_NAME = "prefs";
+    private static final String PREF_DARK_THEME = "dark_theme";
+    private String THEME_MODE;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -42,9 +49,45 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent receiverIntent = getIntent();
+        int theme = receiverIntent.getIntExtra("theme", 0);
+
+        if(theme == 0)
+        {
+            setTitleColor(0x000000);
+            setTitle("Grandeur");
+            theme++;
+        }
+        else
+        {
+            setTitle("Grandeur");
+            theme--;
+        }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
+
+        if(useDarkTheme)
+        {
+            setTheme(R.style.AppTheme);
+        }
+        else
+        {
+            setTheme(R.style.AppTheme_Dark);
+        }
+//        String appTheme = preferences.getString(PREFS_NAME, THEME_MODE+1);
+//
+//        if (appTheme.equals("1")) {
+//            setTheme(R.style.AppTheme);
+//        }
+//
+//        else if (appTheme.equals("2")) {
+//            setTheme(R.style.AppTheme_Dark);
+//        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -58,11 +101,11 @@ public class MainActivity extends AppCompatActivity
 
         // Tabs icons, texts, and colors
         tabLayout.getTabAt(0).setText("FRIENDS");
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account_black_24dp);
         tabLayout.getTabAt(1).setText("CHAT");
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer_black_24dp);
         tabLayout.getTabAt(2).setText("TIMELINE");
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day_black_24dp);
 
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
@@ -96,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
         );
-        tabLayout.setTabTextColors(Color.parseColor("#FFFFFF"), Color.parseColor("#FF5252"));
+        tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF5252"));
     }
 
     @Override
@@ -109,28 +152,13 @@ public class MainActivity extends AppCompatActivity
         else if(tabPosition == 2) getMenuInflater().inflate(R.menu.menu_timeline, menu);
         return true;
     }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            Intent settings = new Intent(this, SettingsActivity.class);
-//            startActivity(settings);
-//            return true;
-//        }
-//        else if (id == R.id.action_about) {
-//            Intent settings = new Intent(this, AboutActivity.class);
-//            startActivity(settings);
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -157,7 +185,7 @@ public class MainActivity extends AppCompatActivity
             return fragment;
         }
 
-        @Override
+//        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_friends, container, false);

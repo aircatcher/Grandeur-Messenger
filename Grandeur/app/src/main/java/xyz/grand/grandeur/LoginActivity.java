@@ -2,21 +2,24 @@ package xyz.grand.grandeur;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -38,8 +41,8 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener
 {
-
-    private EditText inputEmail, inputPassword;
+    private AutoCompleteTextView inputEmail;
+    private EditText inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset;
@@ -89,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         cl_login = (CoordinatorLayout) findViewById(R.id.activity_login);
-        inputEmail = (EditText) findViewById(R.id.email);
+        inputEmail = (AutoCompleteTextView) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnSignup = (Button) findViewById(R.id.btn_signup);
@@ -146,10 +149,13 @@ public class LoginActivity extends AppCompatActivity implements
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)) {
+                else if (TextUtils.isEmpty(password)) {
                     Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                else if(!isNetworkAvailable())
+                    Toast.makeText(getApplicationContext(), "Network is not available, please check your internet connection", Toast.LENGTH_LONG).show();
 
                 progressBar.setVisibility(View.VISIBLE);
 
@@ -191,6 +197,13 @@ public class LoginActivity extends AppCompatActivity implements
 //                }
             }
         });
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
@@ -323,6 +336,20 @@ public class LoginActivity extends AppCompatActivity implements
 //            findViewById(R.id.action_sign_out).setVisibility(View.GONE);
 //        }
 //    }
+
+    protected void setGooglePlusButtonText(SignInButton btnLoginProvider, String buttonText) {
+        // Find the TextView that is inside of the SignInButton and set its text
+        for (int i = 0; i < btnLoginProvider.getChildCount(); i++) {
+            View v = btnLoginProvider.getChildAt(i);
+
+            buttonText = "SIGN IN WITH GOOGLE";
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setText(buttonText);
+                return;
+            }
+        }
+    }
 
     // Prevent going to MainActivity before login
     @Override

@@ -104,7 +104,6 @@ public class FragmentTimeline extends Fragment
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
-        ButterKnife.bind(getActivity());
 
         // Contents on Timeline Tab
         View fragView = inflater.inflate(R.layout.fragment_timeline, container, false);
