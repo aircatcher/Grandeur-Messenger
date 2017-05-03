@@ -185,9 +185,9 @@ public class FragmentChat extends Fragment
             protected void populateView(View v, ChatMessage model, int position) {
 
                 //Get references to the views of list_chat_item.xml
-                TextView messageText = (TextView) v.findViewById(R.id.message_text);
-                TextView messageUser = (TextView) v.findViewById(R.id.message_user);
-                TextView messageTime = (TextView) v.findViewById(R.id.message_time);
+                TextView messageText = (TextView) v.findViewById(R.id.ch_message_text);
+                TextView messageUser = (TextView) v.findViewById(R.id.ch_message_user);
+                TextView messageTime = (TextView) v.findViewById(R.id.ch_message_time);
 
                 if(messageText == null)
                 {

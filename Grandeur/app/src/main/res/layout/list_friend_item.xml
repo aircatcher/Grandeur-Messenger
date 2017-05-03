@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:id="@+id/friend_card_view"
     android:layout_margin="5dp"
-    card_view:cardBackgroundColor="#EEEEEE"
+    card_view:cardBackgroundColor="#FFF"
     card_view:cardElevation="3dp"
     card_view:contentPadding="4dp"
+    card_view:cardPreventCornerOverlap="true"
     android:foreground="?selectableItemBackground"
     android:clickable="true" >
 
@@ -34,6 +35,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="7dp"
             android:layout_marginStart="7dp"
+            android:textColor="@color/black"
             android:layout_toRightOf="@+id/friend_avatar" />
 
         <TextView
@@ -43,6 +45,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="false"
+            android:textColor="@color/black"
             android:layout_below="@+id/friend_username"
             android:layout_marginLeft="7dp"
             android:layout_marginStart="7dp"

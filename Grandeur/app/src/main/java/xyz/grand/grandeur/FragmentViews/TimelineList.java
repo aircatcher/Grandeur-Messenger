@@ -1,5 +1,7 @@
 package xyz.grand.grandeur.FragmentViews;
 
+import android.net.Uri;
+
 import java.util.Date;
 
 /**
@@ -9,14 +11,14 @@ import java.util.Date;
 public class TimelineList {
     private String userName;
     private String timelineContent;
-    private String timelineURL;
-    private long timelineTime;
+    private String timelineImage;
+    private String timelineTime;
 
-    public TimelineList(String userName, String timelineContent, String timelineURL, long timelineTime) {
+    public TimelineList(String userName, String timelineContent, String timelineImage, String timelineTime) {
         this.userName = userName;
         this.timelineContent = timelineContent;
-        this.timelineURL = timelineURL;
-        timelineTime = new Date().getTime();
+        this.timelineImage = timelineImage;
+        this.timelineTime = timelineTime;
     }
 
     public TimelineList() {}
@@ -27,9 +29,9 @@ public class TimelineList {
         return timelineContent;
     }
 
-    public String getTimelineURL() { return timelineURL; }
+    public String getTimelineImage() { return timelineImage; }
 
-    public long getTimelineTime() {
+    public String getTimelineTime() {
         return timelineTime;
     }
 
@@ -38,9 +40,9 @@ public class TimelineList {
 
     public void setTimelineContent(String timelineContent) { this.timelineContent = timelineContent; }
 
-    public void setTimelineURL(String timelineURL) { this.timelineURL = timelineURL; }
+    public void setTimelineImage(String timelineImage) { this.timelineImage = timelineImage; }
 
-    public void setTimelineTime(long timelineTime) {
+    public void setTimelineTime(String timelineTime) {
         this.timelineTime = timelineTime;
     }
 }

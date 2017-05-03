@@ -6,26 +6,31 @@
     android:layout_height="match_parent"
     android:id="@+id/timeline_card_view"
     android:layout_margin="5dp"
-    card_view:cardBackgroundColor="#EEEEEE"
+    card_view:cardBackgroundColor="#FFFFFF"
     card_view:cardElevation="3dp"
     card_view:contentPadding="4dp"
     android:foreground="?selectableItemBackground"
+    card_view:cardPreventCornerOverlap="true"
     android:clickable="true" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:padding="16dp">
 
         <TextView
             android:id="@+id/timeline_username"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="false" />
+            android:layout_alignParentRight="false"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:id="@+id/timeline_time"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -38,10 +43,12 @@
             android:layout_alignEnd="@+id/timeline_username"
             android:layout_alignRight="@+id/timeline_username"
             android:layout_below="@+id/timeline_username"
-            android:layout_marginTop="7dp" />
+            android:layout_marginTop="7dp"
+            android:contentDescription="Image" />
 
         <TextView
             android:id="@+id/timeline_content"
+            android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

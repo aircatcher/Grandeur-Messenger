@@ -3,9 +3,9 @@ package xyz.grand.grandeur.Fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,7 +46,7 @@ public class FragmentFriends extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<FriendList> adapter;
-    ListView frndList;
+    ListView frndListView;
     RelativeLayout cl_login;
 
     @Override
@@ -118,7 +117,7 @@ public class FragmentFriends extends Fragment
 
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
         cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
-        frndList = (ListView) fragView.findViewById(R.id.friend_list_view);
+        frndListView = (ListView) fragView.findViewById(R.id.friend_list_view);
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
@@ -150,14 +149,12 @@ public class FragmentFriends extends Fragment
                 TextView userName = (TextView) v.findViewById(R.id.friend_username);
                 TextView userStatus = (TextView) v.findViewById(R.id.friend_status);
 
-                try {
-                    Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL("#AVATAR_URL_HERE").getContent());
-                    userAvatar.setImageBitmap(bitmap);
-                } catch (IOException e) { e.printStackTrace(); }
+//                Uri imageURI = Uri.parse(model.getUserAvatar());
+//                userAvatar.setImageURI(imageURI);
                 userName.setText(model.getUserName());
                 userStatus.setText(model.getUserStatus());
             }
         };
-        frndList.setAdapter(adapter);
+        frndListView.setAdapter(adapter);
     }
 }

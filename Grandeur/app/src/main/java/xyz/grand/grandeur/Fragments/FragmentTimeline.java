@@ -1,16 +1,18 @@
 package xyz.grand.grandeur.Fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,12 +25,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import butterknife.ButterKnife;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import xyz.grand.grandeur.AboutActivity;
-import xyz.grand.grandeur.LoginActivity;
+import xyz.grand.grandeur.FragmentViews.FriendList;
 import xyz.grand.grandeur.FragmentViews.PostTimeline;
-import xyz.grand.grandeur.R;
+import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
 import xyz.grand.grandeur.FragmentViews.TimelineList;
+import xyz.grand.grandeur.LoginActivity;
+import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
 
 import static android.app.Activity.RESULT_OK;
@@ -41,17 +48,15 @@ public class FragmentTimeline extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<TimelineList> adapter;
-
-    ListView tmlnList;
+    ListView timelineListView;
     RelativeLayout rl_timeline;
-    FloatingActionButton fab;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_post_timeline)
         {
-            Intent postTL = new Intent(getActivity(), PostTimeline.class);
-            getActivity().startActivity(postTL);
+            Intent postNewTimeline = new Intent(getActivity(), PostTimeline.class);
+            getActivity().startActivity(postNewTimeline);
             return true;
         }
         else if(item.getItemId() == R.id.action_about)
@@ -68,19 +73,23 @@ public class FragmentTimeline extends Fragment
         }
         else if(item.getItemId() == R.id.action_sign_out)
         {
-            AuthUI.getInstance().signOut(this.getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            AuthUI.getInstance().signOut(getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task)
                 {
                     Snackbar.make(rl_timeline, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
                     Intent login = new Intent(getActivity(), LoginActivity.class);
+                    getActivity().finish();
                     getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+
                 }
             });
             return true;
         }
         else { return false; }
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -89,12 +98,15 @@ public class FragmentTimeline extends Fragment
         {
             if(resultCode == RESULT_OK)
             {
-                displayTimeline();
+                displayTimelineList();
             }
             else
             {
+//              Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
+//              getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
                 Intent login = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+                Snackbar.make(rl_timeline, "We couldn't sign you in. Please try again later.", Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -105,60 +117,48 @@ public class FragmentTimeline extends Fragment
     {
         setHasOptionsMenu(true);
 
-        // Contents on Timeline Tab
-        View fragView = inflater.inflate(R.layout.fragment_timeline, container, false);
-        rl_timeline = (RelativeLayout) fragView.findViewById(R.id.fragment_timeline);
-        tmlnList = (ListView) fragView.findViewById(R.id.timeline_list_view);
-        fab = (FloatingActionButton) fragView.findViewById(R.id.fab_post_new_timeline);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newTimeline = new Intent(getActivity(), PostTimeline.class);
-                startActivity(newTimeline);
-//              EditText input_message = (EditText) v.findViewById(R.id.timeline_content);
-//              FirebaseDatabase.getInstance().getReference().push().setValue(new TimelineList(input_message.getText().toString(), FirebaseAuth.getInstance().getCurrentUser().getEmail()));
-            }
-        });
+        View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
+        rl_timeline = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
+        timelineListView = (ListView) fragView.findViewById(R.id.friend_list_view);
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
         {
+//          getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
             Intent login = new Intent(getActivity(), LoginActivity.class);
             getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+            Toast.makeText(getActivity(), "You're not yet signed in, please sign in first", Toast.LENGTH_LONG).show();
         }
         else
         {
+            // Snackbar.make(rl_friends, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
             //Load content
-            displayTimeline();
-            //AlertDialog alertDialog = alertDialogBuilder.create();
-            //alertDialog.show();
+            displayTimelineList();
         }
-
         return fragView;
     }
 
-    private void displayTimeline()
+    private void displayTimelineList()
     {
-        // tmlnList = (ListView) getView().findViewById(R.id.timeline_list);  //This returns null reference, so put it on the onCreateView instead
-        adapter = new FirebaseListAdapter<TimelineList>(this.getActivity(), TimelineList.class, R.layout.fragment_timeline, FirebaseDatabase.getInstance().getReference())
+        //frndList = (ListView) getView().findViewById(R.id.friend_list);   //This returns null reference, so put it on the onCreateView instead
+        adapter = new FirebaseListAdapter<TimelineList>(this.getActivity(), TimelineList.class, R.layout.list_timeline_item, FirebaseDatabase.getInstance().getReference())
         {
             @Override
             protected void populateView(View v, TimelineList model, int position)
             {
                 //Get references to the views of list_timeline_item.xml
-                TextView timelineUsername, timelineTime, timelineContent, timelineURL;
-                timelineUsername = (TextView) v.findViewById(R.id.timeline_username);
-                timelineTime = (TextView) v.findViewById(R.id.timeline_time);
-                timelineContent = (TextView) v.findViewById(R.id.timeline_content);
-                timelineURL = (TextView) v.findViewById(R.id.timeline_url);
+                TextView tl_username = (TextView) v.findViewById(R.id.timeline_username);
+                TextView tl_time = (TextView) v.findViewById(R.id.timeline_time);
+                ImageView tl_image = (ImageView) v.findViewById(R.id.timeline_image);
+                TextView tl_content = (TextView) v.findViewById(R.id.timeline_content);
 
-                timelineUsername.setText(model.getUserName());
-                timelineTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getTimelineTime()));
-                timelineContent.setText(model.getTimelineContent());
-                timelineURL.setText(model.getTimelineURL());
+//                Uri imageURI = Uri.parse(model.getTimelineImage());
+                tl_username.setText(model.getUserName());
+                tl_time.setText(model.getTimelineTime());
+//                tl_image.setImageURI(imageURI);
+                tl_content.setText(model.getTimelineContent());
             }
         };
-        tmlnList.setAdapter(adapter);
+        timelineListView.setAdapter(adapter);
     }
 }
