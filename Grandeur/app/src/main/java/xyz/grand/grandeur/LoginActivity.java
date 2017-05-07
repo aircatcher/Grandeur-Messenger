@@ -45,8 +45,7 @@ public class LoginActivity extends AppCompatActivity implements
     private EditText inputPassword;
     private FirebaseAuth auth;
     private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset;
-    private SignInButton btnLoginProvider;
+    private Button btnSignup, btnLogin, btnReset, btnLoginGoogle;
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -97,13 +96,13 @@ public class LoginActivity extends AppCompatActivity implements
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnSignup = (Button) findViewById(R.id.btn_signup);
         btnLogin = (Button) findViewById(R.id.btn_login);
-        btnLoginProvider = (SignInButton) findViewById(R.id.btn_login_with_google);
+        btnLoginGoogle = (Button) findViewById(R.id.btn_login_with_google);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
 //        mStatusTextView = (TextView) findViewById(R.id.status_text);
 
         // [START customize_button]
         // Set the dimensions of the sign-in button.
-        btnLoginProvider.setSize(SignInButton.SIZE_STANDARD);
+//        btnLoginGoogle.setSize(SignInButton.SIZE_STANDARD);
         // [END customize_button]
 
         //Get Firebase auth instance
@@ -185,16 +184,16 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
 
-        btnLoginProvider.setOnClickListener(new View.OnClickListener() {
+        btnLoginGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Not yet implemented, we're still fixing the issue", Toast.LENGTH_LONG).show();
-//                if(signInResult == null) signIn();
-//                else
-//                {
-//                    Intent intentToMain = new Intent(getApplicationContext(), MainActivity.class);
-//                    startActivity(intentToMain);
-//                }
+//                Toast.makeText(getApplicationContext(), "Not yet implemented, we're still fixing the issue", Toast.LENGTH_LONG).show();
+                if(Auth.GoogleSignInApi == null) signIn();
+                else
+                {
+                    Intent intentToMain = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intentToMain);
+                }
             }
         });
     }

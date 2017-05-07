@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import butterknife.BindView;
 import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
 import xyz.grand.grandeur.Fragments.FragmentTimeline;

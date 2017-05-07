@@ -146,8 +146,8 @@ public class FragmentFriends extends Fragment
             {
                 //Get references to the views of list_friend_item.xml
                 ImageView userAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
-                TextView userName = (TextView) v.findViewById(R.id.friend_username);
-                TextView userStatus = (TextView) v.findViewById(R.id.friend_status);
+                TextView userName    = (TextView)  v.findViewById(R.id.friend_username);
+                TextView userStatus  = (TextView)  v.findViewById(R.id.friend_status);
 
 //                Uri imageURI = Uri.parse(model.getUserAvatar());
 //                userAvatar.setImageURI(imageURI);
