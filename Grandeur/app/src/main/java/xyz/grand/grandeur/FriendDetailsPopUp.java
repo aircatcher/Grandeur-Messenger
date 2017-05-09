@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 /**
@@ -18,9 +20,15 @@ public class FriendDetailsPopUp extends Activity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friend_details_popup);
+        LinearLayout friendPopupLayout = (LinearLayout) findViewById(R.id.friend_details_popup);
 
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.friend_details_popup, null, false),100,100, true);
-        pw.showAtLocation(this.findViewById(R.id.fragment_friends), Gravity.CENTER, 0, 0);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+
+//        friendPopupLayout.getBackground().setAlpha(220);
+        getWindow().setLayout((int) (width * .8), (int) (height * 0.6));
     }
 }

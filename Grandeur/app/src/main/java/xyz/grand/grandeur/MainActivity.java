@@ -55,12 +55,14 @@ public class MainActivity extends AppCompatActivity
 
         if(theme == 0)
         {
+            setTheme(R.style.AppTheme);
             setTitleColor(0x000000);
             setTitle("Grandeur");
             theme++;
         }
         else
         {
+            setTheme(R.style.AppTheme_Dark);
             setTitle("Grandeur");
             theme--;
         }

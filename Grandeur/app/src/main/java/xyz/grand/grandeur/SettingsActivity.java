@@ -24,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
-    private int theme = 0;
+    public static int theme = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
         if(theme == 1)
         {
 //            btnBackToMenu.getDrawable().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN );
-            btnBackToMenu.setBackgroundColor(0x5d4037);
+//            btnBackToMenu.setBackgroundColor(0x5d4037);
             btnBackToMenu.setImageResource(R.drawable.ic_arrow_back_24dp);
             toolbar.setTitleTextColor(Color.WHITE);
             theme--;
@@ -56,7 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
         else
         {
             toolbar.setTitleTextColor(Color.BLACK);
-            theme--;
+            theme++;
         }
 
         final Intent senderIntent = new Intent(this, MainActivity.class);

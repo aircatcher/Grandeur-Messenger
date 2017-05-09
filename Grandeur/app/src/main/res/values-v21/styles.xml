@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
         <item name="android:colorBackground">@android:color/background_light</item>
         <item name="android:textColorPrimary">@android:color/primary_text_light</item>
         <item name="android:textColorPrimaryInverse">@android:color/primary_text_dark</item>

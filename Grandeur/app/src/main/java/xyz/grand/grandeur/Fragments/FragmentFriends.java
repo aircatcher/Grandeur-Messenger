@@ -1,14 +1,8 @@
 package xyz.grand.grandeur.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -25,21 +20,20 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
+import org.w3c.dom.Text;
 
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.FriendList;
 import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
 import xyz.grand.grandeur.FriendDetailsPopUp;
 import xyz.grand.grandeur.LoginActivity;
+import xyz.grand.grandeur.MainActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
 
@@ -54,6 +48,7 @@ public class FragmentFriends extends Fragment
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<FriendList> adapter;
     ListView frndListView;
+    Button btnPopupTester;
     RelativeLayout cl_login;
 
     @Override
@@ -125,6 +120,20 @@ public class FragmentFriends extends Fragment
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
         cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
         frndListView = (ListView) fragView.findViewById(R.id.friend_list_view);
+        btnPopupTester = (Button) fragView.findViewById(R.id.btn_test_popup);
+
+        //frndListView.setAdapter(new ArrayAdapter< String > (this, R.layout.list_item, countries));
+        btnPopupTester.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), FriendDetailsPopUp.class));
+            }
+        });
+        frndListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
+                startActivity(new Intent(getActivity(), FriendDetailsPopUp.class));
+            }
+        });
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
@@ -163,15 +172,29 @@ public class FragmentFriends extends Fragment
             }
         };
         frndListView.setAdapter(adapter);
+    }
 
-        frndListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                startActivity(new Intent(getActivity(), FriendDetailsPopUp.class));
-            }
-        });
+    public class ListClickHandler implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapter, View view, int position, long arg3) {
+            // TODO Auto-generated method stub
+            ImageView friendAvatar = (ImageView) view.findViewById(R.id.friend_avatar);
+            TextView friendUsername = (TextView) view.findViewById(R.id.friend_username);
+            TextView friendStatus   = (TextView) view.findViewById(R.id.friend_status);
+
+            TextView frndUN = (TextView) view.findViewById(R.id.friend_detail_username);
+            TextView frndST = (TextView) view.findViewById(R.id.friend_detail_status);
+
+            String username = friendUsername.getText().toString();
+            String status = friendStatus.getText().toString();
+            Intent intent = new Intent(getActivity(), FriendDetailsPopUp.class);
+            frndUN.setText(username);
+            frndST.setText(status);
+            startActivity(intent);
+
+        }
+
     }
 }
 

@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/friend_details_popup"
     android:gravity="center">
 
     <ImageView
+        android:id="@+id/friend_detail_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
@@ -17,11 +19,13 @@
         app:srcCompat="@drawable/com_facebook_button_icon_blue" />
 
     <TextView
+        android:id="@+id/friend_detail_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="[username]"/>
 
     <TextView
+        android:id="@+id/friend_detail_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="[status] "/>
