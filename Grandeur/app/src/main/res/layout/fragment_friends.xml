@@ -11,9 +11,10 @@
     tools:context="xyz.grand.grandeur.MainActivity">
 
     <ListView
+        android:clickable="true"
+        android:fadingEdge="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="2dp"
         android:divider="@android:color/transparent"
         android:id="@+id/friend_list_view"
         android:layout_alignParentLeft="true"
@@ -26,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:layout_marginBottom="84dp"
+        android:layout_marginBottom="63dp"
         android:layout_above="@+id/this_is_just_for_bottom_divider"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

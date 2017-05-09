@@ -20,7 +20,12 @@ for your system. We are currently on JDK 8.
    Studio project` and select the project. Gradle will build the project.
 5. Run the app. Click `Run > Run 'app'`. After the project builds you'll be
    prompted to build or launch an emulator.
-
+6. Login with these credentials:
+```
+Email: user@grandeur.com
+Password: user123
+```
+   
 ## Contributing
 
 We intend for this project to be an educational resource: we are excited to

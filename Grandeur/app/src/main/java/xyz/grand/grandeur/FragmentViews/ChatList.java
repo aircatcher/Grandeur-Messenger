@@ -1,22 +1,20 @@
 package xyz.grand.grandeur.FragmentViews;
 
-import java.util.Date;
-
 /**
  * Created by Ferick Andrew on Mar 22, 2017.
  */
 
-public class ChatMessage {
-    private String messageText, messageUser;
-    private long messageTime;
+public class ChatList {
+    private String messageText, messageUser, messageTime;
 
-    public ChatMessage(String messageText, String messageUser) {
+    public ChatList(String messageText, String messageUser, String messageTime) {
         this.messageText = messageText;
         this.messageUser = messageUser;
-        messageTime = new Date().getTime();
+        this.messageTime = messageTime;
+//        messageTime = new Date().getTime();
     }
 
-    public ChatMessage() {}
+    public ChatList() {}
 
     public String getMessageText() {
         return messageText;
@@ -34,11 +32,11 @@ public class ChatMessage {
         this.messageUser = messageUser;
     }
 
-    public long getMessageTime() {
+    public String getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
+    public void setMessageTime(String messageTime) {
         this.messageTime = messageTime;
     }
 }

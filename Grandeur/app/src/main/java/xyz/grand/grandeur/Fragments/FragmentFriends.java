@@ -1,17 +1,22 @@
 package xyz.grand.grandeur.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -28,10 +33,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.FriendList;
 import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
+import xyz.grand.grandeur.FriendDetailsPopUp;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
@@ -146,8 +153,8 @@ public class FragmentFriends extends Fragment
             {
                 //Get references to the views of list_friend_item.xml
                 ImageView userAvatar = (ImageView) v.findViewById(R.id.friend_avatar);
-                TextView userName = (TextView) v.findViewById(R.id.friend_username);
-                TextView userStatus = (TextView) v.findViewById(R.id.friend_status);
+                TextView userName    = (TextView)  v.findViewById(R.id.friend_username);
+                TextView userStatus  = (TextView)  v.findViewById(R.id.friend_status);
 
 //                Uri imageURI = Uri.parse(model.getUserAvatar());
 //                userAvatar.setImageURI(imageURI);
@@ -156,5 +163,15 @@ public class FragmentFriends extends Fragment
             }
         };
         frndListView.setAdapter(adapter);
+
+        frndListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                startActivity(new Intent(getActivity(), FriendDetailsPopUp.class));
+            }
+        });
     }
 }
+

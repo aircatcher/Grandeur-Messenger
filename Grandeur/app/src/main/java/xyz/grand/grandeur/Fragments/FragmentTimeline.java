@@ -1,17 +1,21 @@
 package xyz.grand.grandeur.Fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -48,8 +52,11 @@ public class FragmentTimeline extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
     private FirebaseListAdapter<TimelineList> adapter;
+    FirebaseHelperTimeline firebaseHelper;
+
     ListView timelineListView;
     RelativeLayout rl_timeline;
+    FloatingActionButton fab_post_new_timeline;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,9 +124,10 @@ public class FragmentTimeline extends Fragment
     {
         setHasOptionsMenu(true);
 
-        View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
-        rl_timeline = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
-        timelineListView = (ListView) fragView.findViewById(R.id.friend_list_view);
+        View fragView = inflater.inflate(R.layout.fragment_timeline, container, false);
+        rl_timeline = (RelativeLayout) fragView.findViewById(R.id.fragment_timeline);
+        timelineListView = (ListView) fragView.findViewById(R.id.timeline_list_view);
+        fab_post_new_timeline = (FloatingActionButton) fragView.findViewById(R.id.fab_post_new_timeline);
 
         // Check if not signed in
         if(FirebaseAuth.getInstance().getCurrentUser() == null)
@@ -135,6 +143,14 @@ public class FragmentTimeline extends Fragment
             //Load content
             displayTimelineList();
         }
+
+        fab_post_new_timeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayInputDialog();
+            }
+        });
+
         return fragView;
     }
 
@@ -160,5 +176,45 @@ public class FragmentTimeline extends Fragment
             }
         };
         timelineListView.setAdapter(adapter);
+    }
+
+    private void displayInputDialog()
+    {
+        Dialog d = new Dialog(getActivity());
+        d.setTitle("Save To Firebase");
+        d.setContentView(R.layout.input_dialog_timeline);
+        final EditText etNewContent = (EditText) d.findViewById(R.id.et_new_content);
+        final EditText etNewImage   = (EditText) d.findViewById(R.id.et_new_image);
+        final Button   btnPostTL    = (Button) d.findViewById(R.id.btn_post_this_timeline);
+
+        btnPostTL.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+
+                // GET DATA
+                String tlContent = etNewContent.getText().toString();
+                String tlImage = etNewImage.getText().toString();
+
+                // SET DATA
+                TimelineList tl = new TimelineList();
+                tl.setTimelineContent(tlContent);
+                tl.setTimelineImage(tlImage);
+
+                // SIMPLE VALIDATION
+                if (tlContent != null && tlContent.length() > 0) {
+                    //THEN SAVE
+                    if (firebaseHelper.save(tl)){
+                        etNewContent.setText("");
+                        etNewImage.setText("");
+//                        adapter = new CustomAdapterTimeline(getActivity(), firebaseHelper.retrieve());
+                        timelineListView.setAdapter(adapter);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "Content cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        d.show();
     }
 }
