@@ -19,10 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import butterknife.BindView;
 import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
-import xyz.grand.grandeur.Fragments.FragmentTimeline;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -107,8 +105,6 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account_black_24dp);
         tabLayout.getTabAt(1).setText("CHAT");
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer_black_24dp);
-        tabLayout.getTabAt(2).setText("TIMELINE");
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_view_day_black_24dp);
 
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(mViewPager) {
@@ -152,7 +148,6 @@ public class MainActivity extends AppCompatActivity
 
         if(tabPosition == 0) getMenuInflater().inflate(R.menu.menu_friend, menu);
         else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
-        else if(tabPosition == 2) getMenuInflater().inflate(R.menu.menu_timeline, menu);
         return true;
     }
 
@@ -209,7 +204,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public int getCount() { return 3; } // Show 3 total pages.
+        public int getCount() { return 2; } // Show 3 total pages.
 
         @Override
         public Fragment getItem(int position) {
@@ -222,9 +217,6 @@ public class MainActivity extends AppCompatActivity
                 case 1:
                     FragmentChat tab2 = new FragmentChat();
                     return tab2;
-                case 2:
-                    FragmentTimeline tab3 = new FragmentTimeline();
-                    return tab3;
                 default:
                     return null;
             }

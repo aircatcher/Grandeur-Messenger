@@ -25,7 +25,7 @@
     <string name="timeline_hint">Describe your moment …</string>
     <string name="timeline_url_hint">Add a URL  >>></string>
     <string name="btn_add_url">Add URL</string>
-    <string name="message_hint">Type the message …</string>
+    <string name="message_hint">Type your message…</string>
 
     <!-- Firebase AdMob -->
     <string name="banner_ad_unit_id">Advertisement</string>
@@ -127,6 +127,20 @@
     <string-array name="multi_select_list_preference_default_value" />
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Array list testing -->
+    <string-array name="friend_names">
+        <item>Alex Johnson</item>
+        <item>Bill Gates</item>
+        <item>Jerry Barnacules</item>
+        <item>Tom Gilles</item>
+    </string-array>
+    <string-array name="friend_status">
+        <item>I got you</item>
+        <item>Windows as usual</item>
+        <item>Jerry A.K.A Barnacules</item>
+        <item>This is my status</item>
+    </string-array>
 
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>

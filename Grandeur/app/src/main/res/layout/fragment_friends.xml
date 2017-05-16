@@ -1,48 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_friends"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="xyz.grand.grandeur.MainActivity">
+    tools:context=".ui.FriendList"
+    android:id="@+id/fragment_friends">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:clickable="true"
-        android:fadingEdge="none"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_friend_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:id="@+id/friend_list_view"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/this_is_just_for_divider"
-        android:layout_alignParentTop="true" />
+        android:layout_height="match_parent"/>
 
-    <TextView
-        android:id="@+id/this_is_just_for_divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_marginBottom="63dp"
-        android:layout_above="@+id/this_is_just_for_bottom_divider"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:id="@+id/this_is_just_for_bottom_divider"
+    <ProgressBar
+        android:id="@+id/progress_bar_users"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:id="@+id/btn_test_popup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Popup Test"
-        android:layout_below="@+id/friend_list_view"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 </RelativeLayout>

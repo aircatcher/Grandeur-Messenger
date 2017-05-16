@@ -16,7 +16,7 @@ public class ChatSession extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_session);
+        setContentView(R.layout.activity_chat);
     }
 
 //    private void displayChatMessage()

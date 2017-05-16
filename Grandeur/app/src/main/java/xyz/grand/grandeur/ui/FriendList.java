@@ -1,23 +1,16 @@
-package xyz.grand.grandeur.Fragments;
+package xyz.grand.grandeur.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,36 +18,26 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import xyz.grand.grandeur.R;
+import xyz.grand.grandeur.adapter.UsersChatAdapter;
+import xyz.grand.grandeur.LoginActivity;
+import xyz.grand.grandeur.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import xyz.grand.grandeur.AboutActivity;
-import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
-import xyz.grand.grandeur.LoginActivity;
-import xyz.grand.grandeur.MainActivity;
-import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.SettingsActivity;
-import xyz.grand.grandeur.adapter.UsersChatAdapter;
-import xyz.grand.grandeur.model.User;
 
-/**
- * Created by Ferick Andrew on Mar 21, 2017.
- */
-
-public class FragmentFriends extends Fragment
+public class FriendList extends Activity
 {
-    private static int SIGN_IN_REQUEST_CODE = 1;
-    RelativeLayout cl_login;
-    private static String TAG =  MainActivity.class.getSimpleName();
+    private static String TAG =  FriendList.class.getSimpleName();
 
-    ProgressBar mProgressBarForUsers;
-    RecyclerView mUsersRecyclerView;
+    @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
+    @BindView(R.id.rv_friend_list) RecyclerView mUsersRecyclerView;
 
     private String mCurrentUserUid;
-    private List<String> mUsersKeyList;
+    private List<String>  mUsersKeyList;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -63,69 +46,20 @@ public class FragmentFriends extends Fragment
     private UsersChatAdapter mUsersChatAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        setHasOptionsMenu(true);
-        View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
-        mUsersRecyclerView = (RecyclerView) fragView.findViewById(R.id.rv_friend_list);
-        mProgressBarForUsers = (ProgressBar) fragView.findViewById(R.id.progress_bar_users);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         bindButterKnife();
         setAuthInstance();
         setUsersDatabase();
-
-        // Displaying RecyclerView
-        mUsersChatAdapter = new UsersChatAdapter(getActivity(), new ArrayList<User>());
-        mUsersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mUsersRecyclerView.setHasFixedSize(true);
-        mUsersRecyclerView.setAdapter(mUsersChatAdapter);
+        setUserRecyclerView();
         setUsersKeyList();
         setAuthListener();
-
-        return fragView;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_add_friend)
-        {
-            Intent searchFriend = new Intent(getActivity(), SearchFriendActivity.class);
-            getActivity().startActivity(searchFriend);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_about)
-        {
-            Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
-            getActivity().startActivity(aboutPage);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_settings)
-        {
-            Intent settings = new Intent(getActivity(), SettingsActivity.class);
-            getActivity().startActivity(settings);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_sign_out)
-        {
-            AuthUI.getInstance().signOut(getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task)
-                {
-                    Snackbar.make(cl_login, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-                    Intent login = new Intent(getActivity(), LoginActivity.class);
-                    getActivity().finish();
-                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
-
-                }
-            });
-            return true;
-        }
-        else { return false; }
     }
 
     private void bindButterKnife() {
-        ButterKnife.bind(getActivity());
+        ButterKnife.bind(this);
     }
 
     private void setAuthInstance() {
@@ -135,9 +69,15 @@ public class FragmentFriends extends Fragment
     private void setUsersDatabase() {
         mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("users");
     }
+    private void setUserRecyclerView() {
+        mUsersChatAdapter = new UsersChatAdapter(this, new ArrayList<User>());
+        mUsersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mUsersRecyclerView.setHasFixedSize(true);
+        mUsersRecyclerView.setAdapter(mUsersChatAdapter);
+    }
 
     private void setUsersKeyList() {
-        mUsersKeyList = new ArrayList<>();
+        mUsersKeyList = new ArrayList<String>();
     }
 
     private void setAuthListener() {
@@ -169,7 +109,7 @@ public class FragmentFriends extends Fragment
     }
 
     private void goToLogin() {
-        Intent intent = new Intent(this.getActivity(), LoginActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // LoginActivity is a New Task
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // The old task when coming back to this activity should be cleared so we cannot come back to it.
         startActivity(intent);
@@ -214,6 +154,23 @@ public class FragmentFriends extends Fragment
             String userId = mAuth.getCurrentUser().getUid();
             mUserRefDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_friend, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.action_sign_out){
+            logout();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void showProgressBarForUsers(){
@@ -281,5 +238,5 @@ public class FragmentFriends extends Fragment
             }
         };
     }
-}
 
+}

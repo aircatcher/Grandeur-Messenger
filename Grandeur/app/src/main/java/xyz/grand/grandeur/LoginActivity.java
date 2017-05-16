@@ -47,6 +47,8 @@ public class LoginActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset, btnLoginGoogle;
 
+    Toast toast;
+    View toastView;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private String signInResult;
@@ -153,9 +155,6 @@ public class LoginActivity extends AppCompatActivity implements
                     return;
                 }
 
-                else if(!isNetworkAvailable())
-                    Toast.makeText(getApplicationContext(), "Network is not available, please check your internet connection", Toast.LENGTH_LONG).show();
-
                 progressBar.setVisibility(View.VISIBLE);
 
                 //authenticate user
@@ -172,7 +171,20 @@ public class LoginActivity extends AppCompatActivity implements
                                     if (password.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {
-                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+                                        if(!isNetworkAvailable())
+                                        {
+                                            toast = Toast.makeText(LoginActivity.this, "Network is not available, please check your internet connection", Toast.LENGTH_LONG);
+                                            toastView = toast.getView();
+                                            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
+                                            toast.show();
+                                        }
+                                        else
+                                        {
+                                            toast = Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG);
+                                            toastView = toast.getView();
+                                            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
+                                            toast.show();
+                                        }
                                     }
                                 } else {
                                     finish();

@@ -10,4 +10,6 @@
     <dimen name="slide_desc">16dp</dimen>
     <dimen name="desc_padding">40dp</dimen>
     <dimen name="standard_logo_size">100dp</dimen>
+
+    <dimen name="connection_status_padding">8dp</dimen>
 </resources>

@@ -1,5 +1,7 @@
 package xyz.grand.grandeur.FragmentViews;
 
+import com.firebase.ui.auth.ui.User;
+
 /**
  * Created by Ferick Andrew on Mar 22, 2017.
  */

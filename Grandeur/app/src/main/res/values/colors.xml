@@ -45,4 +45,6 @@
     <color name="line_separator">#A0A0A0</color>
     <color name="line_separator_dark">#283F43</color>
     <color name="bright_foreground_light">#f30909</color>
+
+    <color name="bg_user_message">#ffffff</color>
 </resources>

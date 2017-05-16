@@ -3,8 +3,7 @@
 Welcome to our app of Grandeur, a messaging app that is "simplicity" oriented.
 Currently only available on Android.
 
-![Friend Tab](screenshot/friendtab.png)
-![Timeline Tab](screenshot/timelinetab.png)<br/>
+![Friend Tab](screenshot/friendtab.png)<br/>
 Note; What you've seen on the screenshots here is basically just a mockup
 
 ## Getting Started
@@ -18,9 +17,10 @@ for your system. We are currently on JDK 8.
 3. [Install Android Studio](https://developer.android.com/sdk/index.html).
 4. Import the project. Open Android Studio, click `Open an existing Android
    Studio project` and select the project. Gradle will build the project.
-5. Run the app. Click `Run > Run 'app'`. After the project builds you'll be
+5. Clean Build the project. Click `Build > Clean Build`.
+6. Run the app. Click `Run > Run 'app'`. After the project builds you'll be
    prompted to build or launch an emulator.
-6. Login with these credentials:
+7. Login with these credentials:
 ```
 Email: user@grandeur.com
 Password: user123

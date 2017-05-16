@@ -23,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.ChatList;
-import xyz.grand.grandeur.FragmentViews.FriendToChat;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
@@ -43,13 +42,7 @@ public class FragmentChat extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_new_chat)
-        {
-            Intent newChat = new Intent(getActivity(), FriendToChat.class);
-            getActivity().startActivity(newChat);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_about)
+        if(item.getItemId() == R.id.action_about)
         {
             Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
             getActivity().startActivity(aboutPage);

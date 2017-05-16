@@ -16,7 +16,6 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".WelcomeActivity"
             android:label="Welcome to Grandeur">
@@ -44,14 +43,13 @@
         <activity
             android:name=".SignupActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".AvatarUtil.GalleryUtil"
+            android:theme="@style/AppTheme" />
 
         <activity android:name=".FriendDetailsPopUp"
             android:theme="@style/AppTheme"/>
 
-        <activity
-            android:name=".FragmentViews.PostTimeline"
-            android:label="@string/title_activity_post_timeline"
-            android:theme="@style/AppTheme" />
         <activity android:name=".ResetPasswordActivity" />
 
         <activity
@@ -67,7 +65,6 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".FragmentViews.ChatSession" />
         <activity android:name=".FragmentViews.SearchFriendActivity" />
-        <activity android:name=".FragmentViews.FriendToChat" />
     </application>
 
 </manifest>
