@@ -4,7 +4,6 @@ Welcome to our app of Grandeur, a messaging app that is "simplicity" oriented.
 Currently only available on Android.
 
 ![Friend Tab](screenshot/friendtab.png)<br/>
-Note; What you've seen on the screenshots here is basically just a mockup
 
 ## Getting Started
 
