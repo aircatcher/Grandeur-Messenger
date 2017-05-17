@@ -1,37 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
     android:background="#FFFFFF">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        tools:src="@drawable/headshot_7"
-        android:layout_margin="10dp"/>
+    <android.support.v7.widget.CardView
+        android:id="@+id/avatar_circleView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:innerRadius="0dp"
+        android:shape="ring"
+        app:cardCornerRadius="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/img_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            tools:src="@drawable/headshot_7"
+            android:layout_margin="10dp"
+            android:contentDescription="Avatar" />
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/text_view_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Marcelino"
+        tools:text="Display Name"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_alignBottom="@+id/img_avatar"
-        android:layout_toEndOf="@+id/img_avatar"
-        android:layout_marginBottom="26dp"/>
+        android:layout_marginTop="28dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/avatar_circleView"
+        android:layout_toRightOf="@+id/avatar_circleView" />
+
+    <TextView
+        android:id="@+id/text_view_display_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/text_view_display_name"
+        android:layout_toRightOf="@+id/avatar_circleView"
+        android:textColor="@color/black"
+        tools:text="Status" />
 
     <TextView
         android:id="@+id/text_view_connection_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Online"
-        android:layout_alignTop="@+id/img_avatar"
+        android:layout_alignTop="@+id/avatar_circleView"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        android:layout_marginTop="35dp"
         android:paddingEnd="@dimen/connection_status_padding"
-        android:layout_alignParentEnd="true"/>
-
+        android:paddingRight="@dimen/connection_status_padding"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

@@ -1,9 +1,7 @@
 package xyz.grand.grandeur;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -41,26 +39,26 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener
 {
-    private AutoCompleteTextView inputEmail;
-    private EditText inputPassword;
+    private ProgressDialog mProgressDialog;
     private FirebaseAuth auth;
-    private ProgressBar progressBar;
-    private Button btnSignup, btnLogin, btnReset, btnLoginGoogle;
+
+    CoordinatorLayout cl_login;
+    Toolbar toolbar;
+    ProgressBar progressBar;
+    AutoCompleteTextView inputEmail;
+    EditText inputPassword;
+    Button btnLogin, btnLoginGoogle, btnSignup, btnResetPassword;
 
     Toast toast;
     View toastView;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
-    private String signInResult;
     private GoogleApiClient mGoogleApiClient;
 //    private TextView mStatusTextView;
-    private ProgressDialog mProgressDialog;
-    private CoordinatorLayout cl_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
@@ -89,18 +87,18 @@ public class LoginActivity extends AppCompatActivity implements
         // set the view now
         setContentView(R.layout.activity_login);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         cl_login = (CoordinatorLayout) findViewById(R.id.activity_login);
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         inputEmail = (AutoCompleteTextView) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnSignup = (Button) findViewById(R.id.btn_signup);
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnLoginGoogle = (Button) findViewById(R.id.btn_login_with_google);
-        btnReset = (Button) findViewById(R.id.btn_reset_password);
-//        mStatusTextView = (TextView) findViewById(R.id.status_text);
+        btnSignup = (Button) findViewById(R.id.btn_sign_up);
+        btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
 
         // [START customize_button]
         // Set the dimensions of the sign-in button.
@@ -110,21 +108,6 @@ public class LoginActivity extends AppCompatActivity implements
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        // Show Popup Alert
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        final Button loginGoogle = new Button(this);
-        final Button loginFacebook = new Button(this);
-        loginGoogle.setPadding(5, 5, 5, 5);
-        alertDialogBuilder.setView(loginGoogle);
-        loginFacebook.setPadding(5, 5, 5, 5);
-        alertDialogBuilder.setView(loginFacebook);
-        alertDialogBuilder.setCancelable(false).setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +115,7 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
 
-        btnReset.setOnClickListener(new View.OnClickListener() {
+        btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
@@ -187,8 +170,8 @@ public class LoginActivity extends AppCompatActivity implements
                                         }
                                     }
                                 } else {
-                                    finish();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    finish();
                                     startActivity(intent);
                                 }
                             }
@@ -262,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount googleAcct = result.getSignInAccount();
-            signInResult = getString(R.string.signed_in_fmt, googleAcct.getDisplayName());
+            String signInResult = getString(R.string.signed_in_fmt, googleAcct.getDisplayName());
 
             for(int hsir = 0; hsir < 1; hsir++)
             {
@@ -326,8 +309,7 @@ public class LoginActivity extends AppCompatActivity implements
             mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
         }
-
-        mProgressDialog.show();
+//        mProgressDialog.show();
     }
 
     private void hideProgressDialog() {

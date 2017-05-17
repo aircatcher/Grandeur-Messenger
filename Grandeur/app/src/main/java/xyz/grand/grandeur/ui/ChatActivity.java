@@ -27,8 +27,8 @@ public class ChatActivity extends Activity {
 
     private static final String TAG = ChatActivity.class.getSimpleName();
 
-    @BindView(R.id.recycler_view_chat) RecyclerView mChatRecyclerView;
-    @BindView(R.id.edit_text_message) EditText mUserMessageChatText;
+    RecyclerView mChatRecyclerView;
+    EditText mUserMessageChatText;
 
     private String mRecipientId;
     private String mCurrentUserId;
@@ -38,30 +38,33 @@ public class ChatActivity extends Activity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        bindButterKnife();
+        mChatRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_chat);
+        mUserMessageChatText = (EditText) findViewById(R.id.edit_text_message);
+
         setDatabaseInstance();
         setUsersId();
         setChatRecyclerView();
     }
 
-    private void bindButterKnife() {
-        ButterKnife.bind(this);
-    }
-    private void setDatabaseInstance() {
+    private void setDatabaseInstance()
+    {
         String chatRef = getIntent().getStringExtra(ExtraIntent.EXTRA_CHAT_REF);
         messageChatDatabase = FirebaseDatabase.getInstance().getReference().child(chatRef);
     }
 
-    private void setUsersId() {
+    private void setUsersId()
+    {
         mRecipientId = getIntent().getStringExtra(ExtraIntent.EXTRA_RECIPIENT_ID);
         mCurrentUserId = getIntent().getStringExtra(ExtraIntent.EXTRA_CURRENT_USER_ID);
     }
 
-    private void setChatRecyclerView() {
+    private void setChatRecyclerView()
+    {
         mChatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mChatRecyclerView.setHasFixedSize(true);
         messageChatAdapter = new MessageChatAdapter(new ArrayList<ChatMessage>());
@@ -69,18 +72,24 @@ public class ChatActivity extends Activity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart()
+    {
         super.onStart();
 
-        messageChatListener = messageChatDatabase.limitToFirst(20).addChildEventListener(new ChildEventListener() {
+        messageChatListener = messageChatDatabase.limitToFirst(20).addChildEventListener(new ChildEventListener()
+        {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey) {
-
-                if(dataSnapshot.exists()){
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey)
+            {
+                if(dataSnapshot.exists())
+                {
                     ChatMessage newMessage = dataSnapshot.getValue(ChatMessage.class);
-                    if(newMessage.getSender().equals(mCurrentUserId)){
+                    if(newMessage.getSender().equals(mCurrentUserId))
+                    {
                         newMessage.setRecipientOrSenderStatus(MessageChatAdapter.SENDER);
-                    }else{
+                    }
+                    else
+                    {
                         newMessage.setRecipientOrSenderStatus(MessageChatAdapter.RECIPIENT);
                     }
                     messageChatAdapter.refillAdapter(newMessage);
@@ -89,49 +98,37 @@ public class ChatActivity extends Activity {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
-
     }
-
 
     @Override
     protected void onStop() {
         super.onStop();
-
-        if(messageChatListener != null) {
-            messageChatDatabase.removeEventListener(messageChatListener);
-        }
+        if(messageChatListener != null) { messageChatDatabase.removeEventListener(messageChatListener); }
         messageChatAdapter.cleanUp();
-
     }
 
     @OnClick(R.id.btn_send_message)
-    public void btnSendMsgListener(View sendButton){
-
+    public void btnSendMsgListener(View sendButton)
+    {
         String senderMessage = mUserMessageChatText.getText().toString().trim();
 
-        if(!senderMessage.isEmpty()){
-
+        if(!senderMessage.isEmpty())
+        {
             ChatMessage newMessage = new ChatMessage(senderMessage,mCurrentUserId,mRecipientId);
             messageChatDatabase.push().setValue(newMessage);
 
             mUserMessageChatText.setText("");
         }
     }
-
-
 }

@@ -28,7 +28,7 @@
     <string name="message_hint">Type your message…</string>
 
     <!-- Firebase AdMob -->
-    <string name="banner_ad_unit_id">Advertisement</string>
+    <string name="banner_ad_unit_id">ca-app-pub-5289068263614369/2709620533</string>
 
     <!-- Strings related to login -->
     <string name="title_activity_post_timeline">PostTimeline</string>
@@ -129,12 +129,6 @@
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Array list testing -->
-    <string-array name="friend_names">
-        <item>Alex Johnson</item>
-        <item>Bill Gates</item>
-        <item>Jerry Barnacules</item>
-        <item>Tom Gilles</item>
-    </string-array>
     <string-array name="friend_status">
         <item>I got you</item>
         <item>Windows as usual</item>

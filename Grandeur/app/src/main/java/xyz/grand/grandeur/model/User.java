@@ -9,6 +9,7 @@ import com.google.firebase.database.Exclude;
 public class User {
 
     private String displayName;
+    private String userStatus;
     private String email;
     private String connection;
     private int avatarId;
@@ -19,21 +20,20 @@ public class User {
     public User() {
     }
 
-    public User(String displayName, String email, String connection, int avatarId, long createdAt) {
+    public User(String displayName, String userStatus, String email, String connection, int avatarId, long createdAt) {
         this.displayName = displayName;
+        this.userStatus = userStatus;
         this.email = email;
         this.connection = connection;
         this.avatarId = avatarId;
         this.createdAt = createdAt;
     }
 
-
     public String createUniqueChatRef(long createdAtCurrentUser, String currentUserEmail){
         String uniqueChatRef="";
         if(createdAtCurrentUser > getCreatedAt()){
             uniqueChatRef = cleanEmailAddress(currentUserEmail)+"-"+cleanEmailAddress(getUserEmail());
         }else {
-
             uniqueChatRef=cleanEmailAddress(getUserEmail())+"-"+cleanEmailAddress(currentUserEmail);
         }
         return uniqueChatRef;
@@ -56,6 +56,8 @@ public class User {
     public String getDisplayName() {
         return displayName;
     }
+
+    public String getUserStatus() {return userStatus;}
 
     public String getEmail() {
         return email;

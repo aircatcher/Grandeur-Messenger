@@ -11,18 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import xyz.grand.grandeur.AboutActivity;
-import xyz.grand.grandeur.FragmentViews.ChatList;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
@@ -36,7 +32,7 @@ import static android.app.Activity.RESULT_OK;
 public class FragmentChat extends Fragment
 {
     private static int SIGN_IN_REQUEST_CODE = 1;
-    private FirebaseListAdapter<ChatList> adapter;
+//    private FirebaseListAdapter<ChatList> adapter;
     ListView chatListView;
     RelativeLayout cl_login;
 
@@ -109,7 +105,8 @@ public class FragmentChat extends Fragment
         {
 //          getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
             Intent login = new Intent(getActivity(), LoginActivity.class);
-            getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+            getActivity().finish();
+            startActivityForResult(login, SIGN_IN_REQUEST_CODE);
             Toast.makeText(getActivity(), "You're not yet signed in, please sign in first", Toast.LENGTH_LONG).show();
         }
         else
@@ -123,21 +120,21 @@ public class FragmentChat extends Fragment
 
     private void displayChatList()
     {
-        adapter = new FirebaseListAdapter<ChatList>(this.getActivity(), ChatList.class, R.layout.list_chat_history_item, FirebaseDatabase.getInstance().getReference())
-        {
-            @Override
-            protected void populateView(View v, ChatList model, int position)
-            {
-                //Get references to the views of list_chat_history_item.xml
-                TextView messageUser = (TextView) v.findViewById(R.id.ch_message_user);
-                TextView messageText = (TextView) v.findViewById(R.id.ch_message_text);
-                TextView messageTime = (TextView) v.findViewById(R.id.ch_message_time);
-
-                messageUser.setText(model.getMessageUser());
-                messageText.setText(model.getMessageText());
-                messageTime.setText(model.getMessageTime());
-            }
-        };
-        chatListView.setAdapter(adapter);
+//        adapter = new FirebaseListAdapter<ChatList>(this.getActivity(), ChatList.class, R.layout.list_chat_history_item, FirebaseDatabase.getInstance().getReference().child("chatMessage"))
+//        {
+//            @Override
+//            protected void populateView(View v, ChatList model, int position)
+//            {
+//                //Get references to the views of list_chat_history_item.xml
+//                TextView messageUser = (TextView) v.findViewById(R.id.ch_message_user);
+//                TextView messageText = (TextView) v.findViewById(R.id.ch_message_text);
+//                TextView messageTime = (TextView) v.findViewById(R.id.ch_message_time);
+//
+//                messageUser.setText(model.getMessageUser());
+//                messageText.setText(model.getMessageText());
+//                messageTime.setText(model.getMessageTime());
+//            }
+//        };
+//        chatListView.setAdapter(adapter);
     }
 }

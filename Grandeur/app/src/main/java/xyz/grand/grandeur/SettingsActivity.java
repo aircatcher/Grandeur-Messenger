@@ -24,42 +24,33 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
-    public static int theme = 0;
+    public static int theme = 0; //0 = light theme; 1 = dark theme
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         SharedPreferences preferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean useDarkTheme = preferences.getBoolean(PREF_DARK_THEME, false);
-
         if(useDarkTheme) {
-            theme++;
             setTheme(R.style.AppTheme_Dark);
-            int backButtonColor = ContextCompat.getColor(this, R.color.white);
+            theme++;
+            useDarkTheme = true;
+        }
+        else if(useDarkTheme == true)
+        {
+            setTheme(R.style.AppTheme);
+            theme--;
+            useDarkTheme = false;
         }
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_settings);
-
         toggleDarkTheme = (Switch) findViewById(R.id.toggle_dark_theme);
         btnBackToMenu = (ImageView) findViewById(R.id.btn_settings_backToMenu);
         toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
 
-        if(theme == 1)
-        {
-//            btnBackToMenu.getDrawable().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN );
-//            btnBackToMenu.setBackgroundColor(0x5d4037);
-            btnBackToMenu.setImageResource(R.drawable.ic_arrow_back_24dp);
-            toolbar.setTitleTextColor(Color.WHITE);
-            theme--;
-        }
-        else
-        {
-            toolbar.setTitleTextColor(Color.BLACK);
-            theme++;
-        }
-
-        final Intent senderIntent = new Intent(this, MainActivity.class);
+        final Intent senderIntent = new Intent(SettingsActivity.this, MainActivity.class);
         senderIntent.putExtra("theme", theme);
 
 //        if(useDarkTheme)
@@ -84,6 +75,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton view, boolean isChecked) {
                 themeToggle(isChecked);
+                toolbar.setTitleTextColor(Color.WHITE);
+                btnBackToMenu.setImageResource(R.drawable.ic_arrow_back_24dp);
             }
         });
     }

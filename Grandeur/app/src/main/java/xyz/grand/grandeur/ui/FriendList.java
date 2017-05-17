@@ -50,7 +50,6 @@ public class FriendList extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bindButterKnife();
         setAuthInstance();
         setUsersDatabase();
         setUserRecyclerView();
@@ -58,16 +57,12 @@ public class FriendList extends Activity
         setAuthListener();
     }
 
-    private void bindButterKnife() {
-        ButterKnife.bind(this);
-    }
-
     private void setAuthInstance() {
         mAuth = FirebaseAuth.getInstance();
     }
 
     private void setUsersDatabase() {
-        mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("users");
+        mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("friendList");
     }
     private void setUserRecyclerView() {
         mUsersChatAdapter = new UsersChatAdapter(this, new ArrayList<User>());
@@ -223,19 +218,13 @@ public class FriendList extends Activity
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
     }
 

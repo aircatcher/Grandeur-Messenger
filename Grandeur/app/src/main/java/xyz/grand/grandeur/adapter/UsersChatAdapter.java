@@ -51,11 +51,12 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
         // Set avatar
         int userAvatarId= ChatHelper.getDrawableAvatarId(fireChatUser.getAvatarId());
-        Drawable  avatarDrawable = ContextCompat.getDrawable(mContext,userAvatarId);
+        Drawable avatarDrawable = ContextCompat.getDrawable(mContext, userAvatarId);
         holder.getUserAvatar().setImageDrawable(avatarDrawable);
 
-        // Set display name
+        // Set display name & status
         holder.getUserDisplayName().setText(fireChatUser.getDisplayName());
+        holder.getUserDisplayStatus().setText(fireChatUser.getUserStatus());
 
         // Set presence status
         holder.getStatusConnection().setText(fireChatUser.getConnection());
@@ -101,7 +102,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
     public class ViewHolderUsers extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private ImageView mUserAvatar;
-        private TextView mUserDisplayName;
+        private TextView mUserDisplayName, mUserDisplayStatus;
         private TextView mStatusConnection;
         private Context mContextViewHolder;
 
@@ -109,6 +110,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
             super(itemView);
             mUserAvatar = (ImageView)itemView.findViewById(R.id.img_avatar);
             mUserDisplayName = (TextView)itemView.findViewById(R.id.text_view_display_name);
+            mUserDisplayStatus = (TextView)itemView.findViewById(R.id.text_view_display_status);
             mStatusConnection = (TextView)itemView.findViewById(R.id.text_view_connection_status);
             mContextViewHolder = context;
 
@@ -117,6 +119,10 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
         public ImageView getUserAvatar() {
             return mUserAvatar;
+        }
+
+        public TextView getUserDisplayStatus() {
+            return mUserDisplayStatus;
         }
 
         public TextView getUserDisplayName() {
@@ -132,7 +138,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
             User user = mUsers.get(getLayoutPosition());
 
-            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt,mCurrentUserEmail);
+            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt, mCurrentUserEmail);
 
             Intent chatIntent = new Intent(mContextViewHolder, ChatActivity.class);
             chatIntent.putExtra(ExtraIntent.EXTRA_CURRENT_USER_ID, mCurrentUserId);

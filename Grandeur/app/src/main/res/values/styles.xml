@@ -37,5 +37,4 @@
     </style>
 
     <style name="AppTheme.Dark.PopupOverlay" parent="ThemeOverlay.AppCompat" />
-
 </resources>

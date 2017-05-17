@@ -7,8 +7,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FragmentViews.SearchFriendActivity;
@@ -39,6 +38,8 @@ import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.SettingsActivity;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
+
+import static xyz.grand.grandeur.SettingsActivity.theme;
 
 /**
  * Created by Ferick Andrew on Mar 21, 2017.
@@ -52,6 +53,7 @@ public class FragmentFriends extends Fragment
 
     ProgressBar mProgressBarForUsers;
     RecyclerView mUsersRecyclerView;
+    Toolbar toolbar;
 
     private String mCurrentUserUid;
     private List<String> mUsersKeyList;
@@ -67,12 +69,15 @@ public class FragmentFriends extends Fragment
                              Bundle savedInstanceState)
     {
         setHasOptionsMenu(true);
+        View mainView = inflater.inflate(R.layout.activity_main, container, false);
+        toolbar = (Toolbar) mainView.findViewById(R.id.main_toolbar);
+
         View fragView = inflater.inflate(R.layout.fragment_friends, container, false);
+        cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_friends);
         mUsersRecyclerView = (RecyclerView) fragView.findViewById(R.id.rv_friend_list);
         mProgressBarForUsers = (ProgressBar) fragView.findViewById(R.id.progress_bar_users);
 
-        bindButterKnife();
-        setAuthInstance();
+        mAuth = FirebaseAuth.getInstance();
         setUsersDatabase();
 
         // Displaying RecyclerView
@@ -82,6 +87,17 @@ public class FragmentFriends extends Fragment
         mUsersRecyclerView.setAdapter(mUsersChatAdapter);
         setUsersKeyList();
         setAuthListener();
+
+        if(theme == 1)
+        {
+            getActivity().setTheme(R.style.AppTheme);
+            toolbar.setTitleTextColor(0xFFFFFF);
+        }
+        else if(theme == 0)
+        {
+            getActivity().setTheme(R.style.AppTheme_Dark);
+            toolbar.setTitleTextColor(0x000000);
+        }
 
         return fragView;
     }
@@ -115,8 +131,7 @@ public class FragmentFriends extends Fragment
                     Snackbar.make(cl_login, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
                     Intent login = new Intent(getActivity(), LoginActivity.class);
                     getActivity().finish();
-                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
-
+                    startActivityForResult(login, SIGN_IN_REQUEST_CODE);
                 }
             });
             return true;
@@ -124,16 +139,8 @@ public class FragmentFriends extends Fragment
         else { return false; }
     }
 
-    private void bindButterKnife() {
-        ButterKnife.bind(getActivity());
-    }
-
-    private void setAuthInstance() {
-        mAuth = FirebaseAuth.getInstance();
-    }
-
     private void setUsersDatabase() {
-        mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("users");
+        mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("friendList");
     }
 
     private void setUsersKeyList() {
@@ -220,8 +227,10 @@ public class FragmentFriends extends Fragment
         mProgressBarForUsers.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBarForUsers(){
-        if(mProgressBarForUsers.getVisibility()==View.VISIBLE) {
+    private void hideProgressBarForUsers()
+    {
+        if(mProgressBarForUsers.getVisibility()==View.VISIBLE)
+        {
             mProgressBarForUsers.setVisibility(View.GONE);
         }
     }
@@ -229,23 +238,25 @@ public class FragmentFriends extends Fragment
     private ChildEventListener getChildEventListener() {
         return new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                if(dataSnapshot.exists()){
-
+            public void onChildAdded(DataSnapshot dataSnapshot, String s)
+            {
+                if(dataSnapshot.exists())
+                {
                     String userUid = dataSnapshot.getKey();
 
-                    if(dataSnapshot.getKey().equals(mCurrentUserUid)){
+                    if(dataSnapshot.getKey().equals(mCurrentUserUid))
+                    {
                         User currentUser = dataSnapshot.getValue(User.class);
                         mUsersChatAdapter.setCurrentUserInfo(userUid, currentUser.getEmail(), currentUser.getCreatedAt());
-                    }else {
+                    }
+                    else
+                    {
                         User recipient = dataSnapshot.getValue(User.class);
                         recipient.setRecipientId(userUid);
                         mUsersKeyList.add(userUid);
                         mUsersChatAdapter.refill(recipient);
                     }
                 }
-
             }
 
             @Override
@@ -261,24 +272,17 @@ public class FragmentFriends extends Fragment
                             mUsersChatAdapter.changeUser(index, user);
                         }
                     }
-
                 }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
     }
 }
