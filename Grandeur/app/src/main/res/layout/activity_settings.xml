@@ -37,11 +37,10 @@
         android:padding="12dp"
         android:background="@android:color/transparent"
         app:srcCompat="@drawable/ic_arrow_back_black_24dp"
-        app:layout_anchor="@+id/include_content_settings" />
+        android:contentDescription="Back to Menu" />
 
     <include
         android:id="@+id/include_content_settings"
-        layout="@layout/content_settings" />
-
-
+        layout="@layout/content_settings"
+        android:paddingTop="-25dp" />
 </android.support.design.widget.CoordinatorLayout>

@@ -146,4 +146,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="separator_string">or</string>
+    <string name="try_kotlin">Try Kotlin</string>
+    <string name="title_activity_actfoo">actfoo</string>
 </resources>

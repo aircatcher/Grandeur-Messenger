@@ -86,10 +86,12 @@
             android:visibility="invisible" />
 
         <Button
+            android:id="@+id/btn_try_kotlin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:visibility="invisible"
+            android:background="@color/colorPrimary"
+            android:text="@string/try_kotlin"
             android:textColor="@android:color/black" />
 
         <Button
@@ -99,7 +101,6 @@
             android:layout_marginTop="10dip"
             android:background="@color/colorAccent"
             android:text="@string/btn_back"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textColor="@color/white" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -1,8 +1,14 @@
 package xyz.grand.grandeur;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,10 +20,11 @@ public class AboutActivity extends AppCompatActivity {
     private int appVersion;
     private String appVersionName;
     private TextView showAppVersion;
-    private Button btnGoBack;
+    private Button btnTryKotlin, btnGoBack;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         showAppVersion = (TextView) findViewById(R.id.show_app_version);

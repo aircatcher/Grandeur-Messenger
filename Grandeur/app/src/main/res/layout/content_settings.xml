@@ -18,14 +18,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp">
 
-        <Switch
-            android:id="@+id/toggle_dark_theme"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="17dp"
-            android:text="Dark Theme"
-            tools:layout_editor_absoluteX="89dp"
-            tools:layout_editor_absoluteY="106dp" />
+            android:layout_height="wrap_content">
+
+            <Switch
+                android:id="@+id/toggle_pinLock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="17dp"
+                android:text="PIN Lock"/>
+
+            <Switch
+                android:id="@+id/toggle_dark_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="17dp"
+                android:text="Dark Theme"
+                android:layout_below="@id/toggle_pinLock"/>
+        </RelativeLayout>
+
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

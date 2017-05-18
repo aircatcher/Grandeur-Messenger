@@ -1,4 +1,6 @@
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -35,10 +37,9 @@ dependencies {
     // Previously compatible version was 25.3.0
     // Found mixed versions 25.3.1 & 25.1.1
     // Previously compatible Google Firebase version was 9.8.0
-    // Custom FirebaseUI Library
-    //    compile 'com.google.android.gms:play-services-plus:10.2.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    compile 'com.andrognito.pinlockview:pinlockview:2.0.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:animated-vector-drawable:25.3.1'
@@ -48,17 +49,16 @@ dependencies {
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.google.firebase:firebase-auth:10.2.1'
-    compile 'com.google.firebase:firebase-database:10.2.1'
-    compile 'com.google.firebase:firebase-storage:10.2.1'
-    compile 'com.google.firebase:firebase-crash:10.2.1'
-    compile 'com.google.firebase:firebase-messaging:10.2.1'
-    compile 'com.google.firebase:firebase-ads:10.2.1'
-    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.2.6'
+    compile 'com.google.firebase:firebase-auth:10.2.6'
+    compile 'com.google.firebase:firebase-database:10.2.6'
+    compile 'com.google.firebase:firebase-storage:10.2.6'
+    compile 'com.google.firebase:firebase-crash:10.2.6'
+    compile 'com.google.firebase:firebase-messaging:10.2.6'
+    compile 'com.google.firebase:firebase-ads:10.2.6'
+    compile 'com.google.firebase:firebase-core:10.2.6'
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
     compile 'com.firebaseui:firebase-ui-database:1.2.0'
     testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 }
-
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.android.application'

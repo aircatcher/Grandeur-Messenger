@@ -1,9 +1,12 @@
 package xyz.grand.grandeur.adapter;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,20 +15,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import xyz.grand.grandeur.FireChatHelper.ChatHelper;
 import xyz.grand.grandeur.FireChatHelper.ExtraIntent;
+import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.model.User;
-import xyz.grand.grandeur.ui.ChatActivity;
-
-import java.util.List;
 
 /**
  * Created by Ferick Andrew on 16/5/2017.
  */
 
-public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.ViewHolderUsers> {
-
+public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.ViewHolderUsers>
+{
     public static final String ONLINE = "online";
     public static final String OFFLINE = "offline";
     private List<User> mUsers;
@@ -34,19 +37,21 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
     private Long mCurrentUserCreatedAt;
     private String mCurrentUserId;
 
-    public UsersChatAdapter(Context context, List<User> fireChatUsers) {
+    public UsersChatAdapter(Context context, List<User> fireChatUsers)
+    {
         mUsers = fireChatUsers;
         mContext = context;
     }
 
     @Override
-    public ViewHolderUsers onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderUsers onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         return new ViewHolderUsers(mContext,LayoutInflater.from(parent.getContext()).inflate(R.layout.list_friend_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderUsers holder, int position) {
-
+    public void onBindViewHolder(ViewHolderUsers holder, int position)
+    {
         User fireChatUser = mUsers.get(position);
 
         // Set avatar
@@ -62,14 +67,16 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
         holder.getStatusConnection().setText(fireChatUser.getConnection());
 
         // Set presence text color
-        if(fireChatUser.getConnection().equals(ONLINE)) {
+        if(fireChatUser.getConnection().equals(ONLINE))
+        {
             // Green color
             holder.getStatusConnection().setTextColor(Color.parseColor("#00FF00"));
-        }else {
+        }
+        else
+        {
             // Red color
             holder.getStatusConnection().setTextColor(Color.parseColor("#FF0000"));
         }
-
     }
 
     @Override
@@ -77,17 +84,20 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
         return mUsers.size();
     }
 
-    public void refill(User users) {
+    public void refill(User users)
+    {
         mUsers.add(users);
         notifyDataSetChanged();
     }
 
-    public void changeUser(int index, User user) {
+    public void changeUser(int index, User user)
+    {
         mUsers.set(index,user);
         notifyDataSetChanged();
     }
 
-    public void setCurrentUserInfo(String userUid, String email, long createdAt) {
+    public void setCurrentUserInfo(String userUid, String email, long createdAt)
+    {
         mCurrentUserId = userUid;
         mCurrentUserEmail = email;
         mCurrentUserCreatedAt = createdAt;
@@ -97,16 +107,16 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
         mUsers.clear();
     }
 
-
     /* ViewHolder for RecyclerView */
-    public class ViewHolderUsers extends RecyclerView.ViewHolder implements View.OnClickListener{
-
+    public class ViewHolderUsers extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
         private ImageView mUserAvatar;
         private TextView mUserDisplayName, mUserDisplayStatus;
         private TextView mStatusConnection;
         private Context mContextViewHolder;
 
-        public ViewHolderUsers(Context context, View itemView) {
+        public ViewHolderUsers(Context context, View itemView)
+        {
             super(itemView);
             mUserAvatar = (ImageView)itemView.findViewById(R.id.img_avatar);
             mUserDisplayName = (TextView)itemView.findViewById(R.id.text_view_display_name);
@@ -134,20 +144,20 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
 
         @Override
-        public void onClick(View view) {
-
+        public void onClick(View view)
+        {
             User user = mUsers.get(getLayoutPosition());
 
-            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt, mCurrentUserEmail);
+            // userCreatedAt; type long, returns null
+//            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt, mCurrentUserEmail);
 
-            Intent chatIntent = new Intent(mContextViewHolder, ChatActivity.class);
+            Intent chatIntent = new Intent(mContextViewHolder, FragmentChat.class);
             chatIntent.putExtra(ExtraIntent.EXTRA_CURRENT_USER_ID, mCurrentUserId);
             chatIntent.putExtra(ExtraIntent.EXTRA_RECIPIENT_ID, user.getRecipientId());
-            chatIntent.putExtra(ExtraIntent.EXTRA_CHAT_REF, chatRef);
+//            chatIntent.putExtra(ExtraIntent.EXTRA_CHAT_REF, chatRef);
 
             // Start new activity
-            mContextViewHolder.startActivity(chatIntent);
-
+            mContextViewHolder.
         }
     }
 

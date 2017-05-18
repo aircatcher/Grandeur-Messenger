@@ -12,14 +12,27 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
+import java.util.List;
+
+import butterknife.BindView;
 import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
+import xyz.grand.grandeur.adapter.UsersChatAdapter;
+import xyz.grand.grandeur.model.User;
 
 import static xyz.grand.grandeur.SettingsActivity.theme;
 
@@ -33,9 +46,23 @@ public class MainActivity extends AppCompatActivity
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
+    private static String TAG =  MainActivity.class.getSimpleName();
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     TabLayout tabLayout;
     Toolbar toolbar;
+    @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
+    @BindView(R.id.recycler_view_users) RecyclerView mUsersRecyclerView;
+
+    private String mCurrentUserUid;
+    private List<String> mUsersKeyList;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mUserRefDatabase;
+    private ChildEventListener mChildEventListener;
+    private UsersChatAdapter mUsersChatAdapter;
+
 
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -95,16 +122,6 @@ public class MainActivity extends AppCompatActivity
         mAdView.loadAd(adRequest);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        int tabPosition = tabLayout.getSelectedTabPosition();
-
-        if(tabPosition == 0) getMenuInflater().inflate(R.menu.menu_friend, menu);
-        else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
-        return true;
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -140,5 +157,78 @@ public class MainActivity extends AppCompatActivity
                     return null;
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        int tabPosition = tabLayout.getSelectedTabPosition();
+
+        if(tabPosition == 0) getMenuInflater().inflate(R.menu.menu_friend, menu);
+        else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
+        return true;
+    }
+
+    private void showProgressBarForUsers(){
+        mProgressBarForUsers.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBarForUsers(){
+        if(mProgressBarForUsers.getVisibility()==View.VISIBLE) {
+            mProgressBarForUsers.setVisibility(View.GONE);
+        }
+    }
+
+    private ChildEventListener getChildEventListener() {
+        return new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                if(dataSnapshot.exists()){
+
+                    String userUid = dataSnapshot.getKey();
+
+                    if(dataSnapshot.getKey().equals(mCurrentUserUid)){
+                        User currentUser = dataSnapshot.getValue(User.class);
+                        mUsersChatAdapter.setCurrentUserInfo(userUid, currentUser.getEmail(), currentUser.getCreatedAt());
+                    }else {
+                        User recipient = dataSnapshot.getValue(User.class);
+                        recipient.setRecipientId(userUid);
+                        mUsersKeyList.add(userUid);
+                        mUsersChatAdapter.refill(recipient);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.exists()) {
+                    String userUid = dataSnapshot.getKey();
+                    if(!userUid.equals(mCurrentUserUid)) {
+
+                        User user = dataSnapshot.getValue(User.class);
+
+                        int index = mUsersKeyList.indexOf(userUid);
+                        if(index > -1) {
+                            mUsersChatAdapter.changeUser(index, user);
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
     }
 }

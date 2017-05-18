@@ -1,140 +1,130 @@
 package xyz.grand.grandeur.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import xyz.grand.grandeur.AboutActivity;
-import xyz.grand.grandeur.LoginActivity;
+import java.util.ArrayList;
+
+import butterknife.OnClick;
+import xyz.grand.grandeur.FireChatHelper.ExtraIntent;
 import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.SettingsActivity;
-
-import static android.app.Activity.RESULT_OK;
+import xyz.grand.grandeur.adapter.MessageChatAdapter;
+import xyz.grand.grandeur.model.ChatMessage;
 
 /**
- * Created by Ferick Andrew on Mar 21, 2017.
+ * Created by Ferick Andrew on May 19, 2017.
  */
 
 public class FragmentChat extends Fragment
 {
-    private static int SIGN_IN_REQUEST_CODE = 1;
-//    private FirebaseListAdapter<ChatList> adapter;
-    ListView chatListView;
-    RelativeLayout cl_login;
+    private static final String TAG = FragmentChat.class.getSimpleName();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_about)
-        {
-            Intent aboutPage = new Intent(getActivity(), AboutActivity.class);
-            getActivity().startActivity(aboutPage);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_settings)
-        {
-            Intent settings = new Intent(getActivity(), SettingsActivity.class);
-            getActivity().startActivity(settings);
-            return true;
-        }
-        else if(item.getItemId() == R.id.action_sign_out)
-        {
-            AuthUI.getInstance().signOut(getActivity()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task)
-                {
-                    Snackbar.make(cl_login, "You have been signed out.", Snackbar.LENGTH_SHORT).show();
-                    Intent login = new Intent(getActivity(), LoginActivity.class);
-                    getActivity().finish();
-                    getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
+    RecyclerView mChatRecyclerView;
+    EditText mUserMessageChatText;
 
-                }
-            });
-            return true;
-        }
-        else { return false; }
-    }
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SIGN_IN_REQUEST_CODE)
-        {
-            if(resultCode == RESULT_OK)
-            {
-                displayChatList();
-            }
-            else
-            {
-//              Toast.makeText(this.getActivity(), "We couldn't sign you in. Please try again later.", Toast.LENGTH_LONG).show();
-//              getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
-                Intent login = new Intent(getActivity(), LoginActivity.class);
-                getActivity().startActivityForResult(login, SIGN_IN_REQUEST_CODE);
-                Snackbar.make(cl_login, "We couldn't sign you in. Please try again later.", Snackbar.LENGTH_LONG).show();
-            }
-        }
-    }
+    private String mRecipientId;
+    private String mCurrentUserId;
+    private MessageChatAdapter messageChatAdapter;
+    private DatabaseReference messageChatDatabase;
+    private ChildEventListener messageChatListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        setHasOptionsMenu(true);
-
+        super.onCreate(savedInstanceState);
         View fragView = inflater.inflate(R.layout.fragment_chat, container, false);
-        cl_login = (RelativeLayout) fragView.findViewById(R.id.fragment_chat);
-        chatListView = (ListView) fragView.findViewById(R.id.chat_history_list_view);
+        mChatRecyclerView = (RecyclerView) fragView.findViewById(R.id.recycler_view_chat);
+        mUserMessageChatText = (EditText) fragView.findViewById(R.id.edit_text_message);
 
-        // Check if not signed in
-        if(FirebaseAuth.getInstance().getCurrentUser() == null)
-        {
-//          getActivity().startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
-            Intent login = new Intent(getActivity(), LoginActivity.class);
-            getActivity().finish();
-            startActivityForResult(login, SIGN_IN_REQUEST_CODE);
-            Toast.makeText(getActivity(), "You're not yet signed in, please sign in first", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            // Snackbar.make(rl_chat, "Welcome, " + FirebaseAuth.getInstance().getCurrentUser().getEmail(), Snackbar.LENGTH_SHORT).show();
-            //Load content
-            displayChatList();
-        }
+        // Set Database Instance
+        String chatRef = getActivity().getIntent().getStringExtra(ExtraIntent.EXTRA_CHAT_REF);
+        messageChatDatabase = FirebaseDatabase.getInstance().getReference().child("1"); // chatRef grabs null, temporarily using "1" instead
+
+        // Set Users ID
+        mRecipientId = getActivity().getIntent().getStringExtra(ExtraIntent.EXTRA_RECIPIENT_ID);
+        mCurrentUserId = getActivity().getIntent().getStringExtra(ExtraIntent.EXTRA_CURRENT_USER_ID);
+
+        // Set Chat's RecyclerView
+        mChatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mChatRecyclerView.setHasFixedSize(true);
+        messageChatAdapter = new MessageChatAdapter(new ArrayList<ChatMessage>());
+        mChatRecyclerView.setAdapter(messageChatAdapter);
+
         return fragView;
     }
 
-    private void displayChatList()
+    @Override
+    public void onStart()
     {
-//        adapter = new FirebaseListAdapter<ChatList>(this.getActivity(), ChatList.class, R.layout.list_chat_history_item, FirebaseDatabase.getInstance().getReference().child("chatMessage"))
-//        {
-//            @Override
-//            protected void populateView(View v, ChatList model, int position)
-//            {
-//                //Get references to the views of list_chat_history_item.xml
-//                TextView messageUser = (TextView) v.findViewById(R.id.ch_message_user);
-//                TextView messageText = (TextView) v.findViewById(R.id.ch_message_text);
-//                TextView messageTime = (TextView) v.findViewById(R.id.ch_message_time);
-//
-//                messageUser.setText(model.getMessageUser());
-//                messageText.setText(model.getMessageText());
-//                messageTime.setText(model.getMessageTime());
-//            }
-//        };
-//        chatListView.setAdapter(adapter);
+        super.onStart();
+
+        messageChatListener = messageChatDatabase.limitToFirst(20).addChildEventListener(new ChildEventListener()
+        {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildKey) {
+
+                if(dataSnapshot.exists()){
+                    ChatMessage newMessage = dataSnapshot.getValue(ChatMessage.class);
+                    if(newMessage.getSender().equals(mCurrentUserId)){
+                        newMessage.setRecipientOrSenderStatus(MessageChatAdapter.SENDER);
+                    }else{
+                        newMessage.setRecipientOrSenderStatus(MessageChatAdapter.RECIPIENT);
+                    }
+                    messageChatAdapter.refillAdapter(newMessage);
+                    mChatRecyclerView.scrollToPosition(messageChatAdapter.getItemCount()-1);
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if(messageChatListener != null) {
+            messageChatDatabase.removeEventListener(messageChatListener);
+        }
+        messageChatAdapter.cleanUp();
+
+    }
+
+    @OnClick(R.id.btn_send_message)
+    public void btnSendMsgListener(View sendButton){
+
+        String senderMessage = mUserMessageChatText.getText().toString().trim();
+
+        if(!senderMessage.isEmpty()){
+
+            ChatMessage newMessage = new ChatMessage(senderMessage,mCurrentUserId,mRecipientId);
+            messageChatDatabase.push().setValue(newMessage);
+
+            mUserMessageChatText.setText("");
+        }
     }
 }

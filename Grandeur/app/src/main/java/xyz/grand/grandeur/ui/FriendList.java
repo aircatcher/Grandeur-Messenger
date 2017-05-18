@@ -34,7 +34,7 @@ public class FriendList extends Activity
     private static String TAG =  FriendList.class.getSimpleName();
 
     @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
-    @BindView(R.id.rv_friend_list) RecyclerView mUsersRecyclerView;
+    @BindView(R.id.recycler_view_users) RecyclerView mUsersRecyclerView;
 
     private String mCurrentUserUid;
     private List<String>  mUsersKeyList;
