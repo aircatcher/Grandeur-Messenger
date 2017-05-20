@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener
 {
-    private ProgressDialog mProgressDialog;
+    public static ProgressDialog mProgressDialog;
     private FirebaseAuth auth;
 
     CoordinatorLayout cl_login;

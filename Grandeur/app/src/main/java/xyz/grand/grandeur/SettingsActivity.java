@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
-    private ImageView btnBackToMenu;
     private Toolbar toolbar;
-    private Switch togglePinLock, toggleDarkTheme;
+    private Switch togglePinLock;
+    public static Switch toggleDarkTheme;
 
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
@@ -45,32 +45,25 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_settings);
+
         togglePinLock = (Switch) findViewById(R.id.toggle_pinLock);
         toggleDarkTheme = (Switch) findViewById(R.id.toggle_dark_theme);
-        btnBackToMenu = (ImageView) findViewById(R.id.btn_settings_backToMenu);
         toolbar = (Toolbar) findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
 
         final Intent senderIntent = new Intent(SettingsActivity.this, MainActivity.class);
         senderIntent.putExtra("theme", theme);
 
-//        if(useDarkTheme)
-//        {
-//            setTheme(R.style.AppTheme_Dark);
-//            int backButtonColor = ContextCompat.getColor(this, R.color.white);
-//            btnBackToMenu.setColorFilter(backButtonColor, PorterDuff.Mode.SRC_IN);
-//            toolbar.setTitleTextColor(Color.WHITE);
-//        }
-
-//        btnBackToMenu.getDrawable().setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_IN );
-        btnBackToMenu.setOnClickListener(new View.OnClickListener() {
+        toolbar.setTitleTextColor(Color.BLACK);
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 finish();
-                startActivity(senderIntent);
             }
         });
-
         togglePinLock.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton view, boolean isChecked) {
@@ -93,7 +86,6 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton view, boolean isChecked) {
                 themeToggle(isChecked);
                 toolbar.setTitleTextColor(Color.WHITE);
-                btnBackToMenu.setImageResource(R.drawable.ic_arrow_back_24dp);
             }
         });
     }

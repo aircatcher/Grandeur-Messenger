@@ -1,5 +1,6 @@
 package xyz.grand.grandeur.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -23,11 +26,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.grand.grandeur.AboutActivity;
+import xyz.grand.grandeur.FragmentViews.AddFriendActivity;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.MainActivity;
 import xyz.grand.grandeur.R;
+import xyz.grand.grandeur.SettingsActivity;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
+
+import static xyz.grand.grandeur.LoginActivity.mProgressDialog;
 
 /**
  * Created by Ferick Andrew on Mar 21, 2017.
@@ -65,6 +73,9 @@ public class FragmentFriends extends Fragment
         // Set Users Database
         mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("friendList");
 
+        // Enable sync, keeping the app stay fresh when network is found
+        mUserRefDatabase.keepSynced(true);
+
         // Set RecyclerView Adapter
         mUsersChatAdapter = new UsersChatAdapter(getActivity(), new ArrayList<User>());
         mUsersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -75,22 +86,30 @@ public class FragmentFriends extends Fragment
         mUsersKeyList = new ArrayList<>();
 
         // Set Auth Listener
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
+                hideProgressDialog();
                 hideProgressBarForUsers();
                 FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                if (user != null) {
+                if (user != null)
+                {
                     setUserData(user);
                     queryAllUsers();
-                } else {
+                }
+                else
+                {
                     // User is signed out
                     goToLogin();
                 }
             }
         };
+
+        AdView mAdView = (AdView) fragView.findViewById(R.id.adView_friendsTab);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.bringToFront();
+        mAdView.loadAd(adRequest);
 
         return fragView;
     }
@@ -99,62 +118,84 @@ public class FragmentFriends extends Fragment
         mCurrentUserUid = user.getUid();
     }
 
-    private void queryAllUsers() {
+    private void queryAllUsers()
+    {
         mChildEventListener = getChildEventListener();
         mUserRefDatabase.limitToFirst(50).addChildEventListener(mChildEventListener);
     }
 
-    private void goToLogin() {
+    private void goToLogin()
+    {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // LoginActivity is a New Task
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // The old task when coming back to this activity should be cleared so we cannot come back to it.
+        getActivity().finish();
         startActivity(intent);
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
+        showProgressDialog();
         showProgressBarForUsers();
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         super.onStop();
-
         clearCurrentUsers();
-
-        if (mChildEventListener != null) {
-            mUserRefDatabase.removeEventListener(mChildEventListener);
-        }
-
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-
+        if (mChildEventListener != null) mUserRefDatabase.removeEventListener(mChildEventListener);
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
 
-    private void clearCurrentUsers() {
+    private void clearCurrentUsers()
+    {
         mUsersChatAdapter.clear();
         mUsersKeyList.clear();
     }
 
-    private void logout() {
+    private void logout()
+    {
         showProgressBarForUsers();
         setUserOffline();
         mAuth.signOut();
     }
 
-    private void setUserOffline() {
-        if(mAuth.getCurrentUser()!=null ) {
+    private void setUserOffline()
+    {
+        if(mAuth.getCurrentUser()!=null )
+        {
             String userId = mAuth.getCurrentUser().getUid();
             mUserRefDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.action_sign_out){
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == R.id.action_add_friend)
+        {
+            Intent addNewFriend = new Intent(getActivity(), AddFriendActivity.class);
+            startActivity(addNewFriend);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_about)
+        {
+            Intent intentAbout = new Intent(getActivity(), AboutActivity.class);
+            startActivity(intentAbout);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_settings)
+        {
+            Intent intentSettings = new Intent(getActivity(), SettingsActivity.class);
+            startActivity(intentSettings);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_sign_out)
+        {
             logout();
             return true;
         }
@@ -166,32 +207,51 @@ public class FragmentFriends extends Fragment
         mProgressBarForUsers.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBarForUsers(){
-        if(mProgressBarForUsers.getVisibility()==View.VISIBLE) {
+    private void hideProgressBarForUsers()
+    {
+        if(mProgressBarForUsers.getVisibility()==View.VISIBLE)
             mProgressBarForUsers.setVisibility(View.GONE);
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 
-    private ChildEventListener getChildEventListener() {
-        return new ChildEventListener() {
+    private ChildEventListener getChildEventListener()
+    {
+        return new ChildEventListener()
+        {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                if(dataSnapshot.exists()){
-
+            public void onChildAdded(DataSnapshot dataSnapshot, String s)
+            {
+                if(dataSnapshot.exists())
+                {
                     String userUid = dataSnapshot.getKey();
 
-                    if(dataSnapshot.getKey().equals(mCurrentUserUid)){
+                    if(dataSnapshot.getKey().equals(mCurrentUserUid))
+                    {
                         User currentUser = dataSnapshot.getValue(User.class);
                         mUsersChatAdapter.setCurrentUserInfo(userUid, currentUser.getEmail(), currentUser.getCreatedAt());
-                    }else {
+                    }
+                    else
+                    {
                         User recipient = dataSnapshot.getValue(User.class);
                         recipient.setRecipientId(userUid);
                         mUsersKeyList.add(userUid);
                         mUsersChatAdapter.refill(recipient);
                     }
                 }
-
             }
 
             @Override
@@ -207,24 +267,15 @@ public class FragmentFriends extends Fragment
                             mUsersChatAdapter.changeUser(index, user);
                         }
                     }
-
                 }
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
     }
 

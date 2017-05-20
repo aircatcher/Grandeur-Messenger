@@ -10,37 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:orientation="vertical" >
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_settings"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:orientation="vertical" >
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_settings"
+                android:layout_width="match_parent"
+                app:titleTextColor="@color/black"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/btn_settings_backToMenu"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:padding="12dp"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_arrow_back_black_24dp"
-        android:contentDescription="Back to Menu" />
 
     <include
         android:id="@+id/include_content_settings"
-        layout="@layout/content_settings"
-        android:paddingTop="-25dp" />
+        layout="@layout/content_settings" />
 </android.support.design.widget.CoordinatorLayout>

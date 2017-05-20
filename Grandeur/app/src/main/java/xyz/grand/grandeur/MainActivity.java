@@ -17,19 +17,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TabHost;
+import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 import butterknife.BindView;
-import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity
      */
     private static String TAG =  MainActivity.class.getSimpleName();
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    TabLayout tabLayout;
     Toolbar toolbar;
+    Toast toast;
+    View toastView;
     @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
     @BindView(R.id.recycler_view_users) RecyclerView mUsersRecyclerView;
 
@@ -63,15 +63,17 @@ public class MainActivity extends AppCompatActivity
     private ChildEventListener mChildEventListener;
     private UsersChatAdapter mUsersChatAdapter;
 
-
     private static final String PREFS_NAME = "prefs";
     private static final String PREF_DARK_THEME = "dark_theme";
     private String THEME_MODE;
 
+    private static SectionsPagerAdapter mSectionsPagerAdapter;
+    public static TabLayout tabLayout;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
+    public static TabHost tabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,8 +81,28 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Firebase Disk Persistence (Maintain state when offline)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+//        tabHost = (TabHost) findViewById(android.R.id.tabhost);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
+
+        if(!isNetworkAvailable())
+        {
+            toast = Toast.makeText(MainActivity.this, "Network is not available, please check your internet connection", Toast.LENGTH_LONG);
+            toastView = toast.getView();
+            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
+            toast.show();
+        }
+        else
+        {
+            toast = Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG);
+            toastView = toast.getView();
+            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
+            toast.show();
+        }
 
         Intent receiverIntent = getIntent();
         receiverIntent.getIntExtra("theme", theme);
@@ -106,20 +128,15 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+//        tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(mViewPager);
 
         // Tabs icons, texts, and colors
-        tabLayout.getTabAt(0).setText("FRIENDS");
+//        tabLayout.getTabAt(0).setText("FRIENDS");
 //        tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account_black_24dp);
-        tabLayout.getTabAt(1).setText("CHAT");
+//        tabLayout.getTabAt(1).setText("CHAT");
 //        tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer_black_24dp);
-        tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF5252"));
-
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.bringToFront();
-        mAdView.loadAd(adRequest);
+//        tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF5252"));
     }
 
     private boolean isNetworkAvailable() {
@@ -140,7 +157,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public int getCount() { return 2; } // Show 3 total pages.
+        public int getCount() { return 1; } // Show 3 total pages.
 
         @Override
         public Fragment getItem(int position) {
@@ -148,11 +165,10 @@ public class MainActivity extends AppCompatActivity
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    FragmentFriends tab1 = new FragmentFriends();
-                    return tab1;
-                case 1:
-                    FragmentChat tab2 = new FragmentChat();
-                    return tab2;
+                    return new FragmentFriends();
+//                case 1:
+//                    return new FragmentFriends();
+//                    return new ChatActivity();
                 default:
                     return null;
             }
@@ -162,10 +178,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        int tabPosition = tabLayout.getSelectedTabPosition();
+//        int tabPosition = tabLayout.getSelectedTabPosition();
 
-        if(tabPosition == 0) getMenuInflater().inflate(R.menu.menu_friend, menu);
-        else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
+//        if(tabPosition == 0)
+        getMenuInflater().inflate(R.menu.menu_friend, menu);
+//        else if(tabPosition == 1) getMenuInflater().inflate(R.menu.menu_chat, menu);
         return true;
     }
 
@@ -219,16 +236,11 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         };
     }
 }

@@ -1,12 +1,9 @@
 package xyz.grand.grandeur.adapter;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,9 +16,9 @@ import java.util.List;
 
 import xyz.grand.grandeur.FireChatHelper.ChatHelper;
 import xyz.grand.grandeur.FireChatHelper.ExtraIntent;
-import xyz.grand.grandeur.Fragments.FragmentChat;
 import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.model.User;
+import xyz.grand.grandeur.ui.ChatActivity;
 
 /**
  * Created by Ferick Andrew on 16/5/2017.
@@ -147,18 +144,19 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
         public void onClick(View view)
         {
             User user = mUsers.get(getLayoutPosition());
+            boolean chatTab = true;
 
             // userCreatedAt; type long, returns null
 //            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt, mCurrentUserEmail);
 
-            Intent chatIntent = new Intent(mContextViewHolder, FragmentChat.class);
-            chatIntent.putExtra(ExtraIntent.EXTRA_CURRENT_USER_ID, mCurrentUserId);
-            chatIntent.putExtra(ExtraIntent.EXTRA_RECIPIENT_ID, user.getRecipientId());
+            final Intent chatSenderIntent = new Intent(mContextViewHolder, ChatActivity.class);
+            chatSenderIntent.putExtra(ExtraIntent.EXTRA_CURRENT_USER_ID, mCurrentUserId);
+            chatSenderIntent.putExtra(ExtraIntent.EXTRA_RECIPIENT_ID, user.getRecipientId());
 //            chatIntent.putExtra(ExtraIntent.EXTRA_CHAT_REF, chatRef);
 
             // Start new activity
-            mContextViewHolder.
+            mContextViewHolder.startActivity(chatSenderIntent);
+            chatSenderIntent.putExtra("chatView", chatTab);
         }
     }
-
 }

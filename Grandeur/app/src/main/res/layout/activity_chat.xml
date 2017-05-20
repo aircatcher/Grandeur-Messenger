@@ -4,14 +4,13 @@
     android:layout_height="match_parent"
     android:background="@color/authui_inputTextColor"
     android:id="@+id/activity_chat"
-    tools:context=".ui.ChatActivity">
+    tools:context=".Fragments.FragmentChat">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/divider"
-        />
+        android:layout_above="@+id/divider" />
 
     <View
         android:id="@+id/divider"
@@ -19,6 +18,7 @@
         android:layout_height="1dp"
         android:layout_gravity="bottom"
         android:layout_above="@+id/senderContainer"/>
+
     <RelativeLayout
         android:id="@+id/senderContainer"
         android:layout_width="match_parent"

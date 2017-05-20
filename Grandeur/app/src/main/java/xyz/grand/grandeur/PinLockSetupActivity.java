@@ -1,8 +1,11 @@
 package xyz.grand.grandeur;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.andrognito.pinlockview.IndicatorDots;
@@ -14,14 +17,26 @@ public class PinLockSetupActivity extends AppCompatActivity
     public static final String TAG = "";
     private PinLockView mPinLockView;
     private IndicatorDots mIndicatorDots;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_lock_setup);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_pin_lock_setup);
 
         Toast.makeText(getApplicationContext(), "PIN Lock is currently not working just yet", Toast.LENGTH_LONG).show();
+
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_black_24dp));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
 
         mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
         mPinLockView.setPinLockListener(mPinLockListener);

@@ -60,7 +60,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".AboutActivity" />
-        <activity android:name=".FragmentViews.SearchFriendActivity" />
+        <activity android:name=".FragmentViews.AddFriendActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
