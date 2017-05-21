@@ -7,6 +7,7 @@ Currently only available on Android.
 ![Sign Up](screenshot/signup.png)
 ![Forgot Password](screenshot/forgotpassword.png)
 ![Friend List](screenshot/friendlist.png)
+![Adview on Friend List](screenshot/adview.png)
 ![Settings](screenshot/settings.png)<br/>
 
 ## Getting Started
