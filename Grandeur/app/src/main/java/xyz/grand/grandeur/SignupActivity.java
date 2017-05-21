@@ -3,7 +3,6 @@ package xyz.grand.grandeur;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -13,8 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,16 +27,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.Console;
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.IOException;
 
-import butterknife.internal.Utils;
+import xyz.grand.grandeur.model.User;
 
 public class SignupActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 100;
@@ -46,11 +48,29 @@ public class SignupActivity extends AppCompatActivity {
     Uri imageUri;
     ProgressDialog progDial;
 
-    private EditText inputEmail, inputPassword;
+    String userId, userStatus, displayName, signUpEmail, signUpPassword, connection;
+    int avatarId;
+    long createdAt;
+
+    private EditText etDisplayName, inputEmail, inputPassword;
     private Button btnSignIn, btnSignUp, btnAddAvatar, btnResetPassword;
     public ImageView avatarPreview;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
+
+    // Firebase Disk Persistence (Maintain state when offline)
+    private DatabaseReference mDatabaseRef;
+    private static FirebaseDatabase firebaseDatabase;
+    public FirebaseDatabase getDatabase()
+    {
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        if (firebaseDatabase == null)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
+        return firebaseDatabase;
+    }
 
     //creating reference to firebase storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -78,8 +98,9 @@ public class SignupActivity extends AppCompatActivity {
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
-        inputEmail = (EditText) findViewById(R.id.email);
-        inputPassword = (EditText) findViewById(R.id.password);
+        etDisplayName = (EditText) findViewById(R.id.edit_text_register_display_name);
+        inputEmail = (EditText) findViewById(R.id.edit_text_register_email);
+        inputPassword = (EditText) findViewById(R.id.edit_text_register_password);
 
         btnAddAvatar = (Button) findViewById(R.id.add_your_avatar);
         avatarPreview = (ImageView) findViewById(R.id.avatar_preview);
@@ -103,32 +124,44 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
+                displayName = etDisplayName.getText().toString().trim();
+                signUpEmail = inputEmail.getText().toString().trim();
+                signUpPassword = inputPassword.getText().toString().trim();
 
                 if (avatarPreview.getDrawable().getConstantState() == SignupActivity.this.getResources().getDrawable(R.drawable.ic_person_black_24dp).getConstantState()) {
-                    Toast.makeText(getApplicationContext(), "You need to add your avatar!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Your avatar cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(displayName)) {
+                    etDisplayName.setError("Display name cannot be empty");
                     return;
                 }
 
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(signUpEmail)) {
+                    inputEmail.setError(getString(R.string.empty_email));
                     return;
                 }
 
-                if (password.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                if (!(android.util.Patterns.EMAIL_ADDRESS.matcher(signUpEmail).matches()))
+                {
+                    inputEmail.setError("Incorrect email format");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(signUpPassword)) {
+                    inputPassword.setError(getString(R.string.empty_password));
+                    return;
+                }
+
+                if (signUpPassword.length() < 6) {
+                    inputPassword.setError(getString(R.string.minimum_password));
                     return;
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
                 //create user
-                auth.createUserWithEmailAndPassword(email, password)
+                auth.createUserWithEmailAndPassword(signUpEmail, signUpPassword)
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -141,7 +174,7 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    i++;
+                                    writeNewUser(userId, displayName, userStatus, signUpEmail, connection, avatarId, createdAt);
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
@@ -149,6 +182,16 @@ public class SignupActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    private void writeNewUser(String userId, String displayName, String userStatus, String email, String connection, int avatarId, long createdAt)
+    {
+        i = 1;
+        String uid = String.valueOf(i);
+        User user = new User(displayName, userStatus, email, connection, avatarId, createdAt);
+        mDatabaseRef.child("friendList").setValue(uid);
+        mDatabaseRef.child("friendList").child(userId).setValue(user);
+        i++;
     }
 
     @Override

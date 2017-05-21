@@ -26,13 +26,13 @@ import xyz.grand.grandeur.ui.ChatActivity;
 
 public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.ViewHolderUsers>
 {
-    public static final String ONLINE = "online";
-    public static final String OFFLINE = "offline";
+    public static final String ONLINE = "ONLINE";
+    public static final String OFFLINE = "OFFLINE";
     private List<User> mUsers;
     private Context mContext;
-    private String mCurrentUserEmail;
-    private Long mCurrentUserCreatedAt;
-    private String mCurrentUserId;
+    private static String mCurrentUserEmail;
+    private static Long mCurrentUserCreatedAt;
+    private static String mCurrentUserId;
 
     public UsersChatAdapter(Context context, List<User> fireChatUsers)
     {
@@ -144,7 +144,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
         public void onClick(View view)
         {
             User user = mUsers.get(getLayoutPosition());
-            boolean chatTab = true;
+            boolean chatView = true;
 
             // userCreatedAt; type long, returns null
 //            String chatRef = user.createUniqueChatRef(mCurrentUserCreatedAt, mCurrentUserEmail);
@@ -156,7 +156,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
             // Start new activity
             mContextViewHolder.startActivity(chatSenderIntent);
-            chatSenderIntent.putExtra("chatView", chatTab);
+            chatSenderIntent.putExtra("chatView", chatView);
         }
     }
 }

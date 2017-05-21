@@ -1,12 +1,9 @@
 package xyz.grand.grandeur;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +30,7 @@ import xyz.grand.grandeur.Fragments.FragmentFriends;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
 
-import static xyz.grand.grandeur.SettingsActivity.theme;
+import static xyz.grand.grandeur.settings.SettingsActivity.useDarkTheme;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -47,6 +43,18 @@ public class MainActivity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private static String TAG =  MainActivity.class.getSimpleName();
+
+    // Firebase Disk Persistence (Maintain state when offline)
+    private static FirebaseDatabase firebaseDatabase;
+    public static FirebaseDatabase getDatabase()
+    {
+        if (firebaseDatabase == null)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
+        return firebaseDatabase;
+    }
 
     Toolbar toolbar;
     Toast toast;
@@ -63,61 +71,37 @@ public class MainActivity extends AppCompatActivity
     private ChildEventListener mChildEventListener;
     private UsersChatAdapter mUsersChatAdapter;
 
-    private static final String PREFS_NAME = "prefs";
-    private static final String PREF_DARK_THEME = "dark_theme";
-    private String THEME_MODE;
-
     private static SectionsPagerAdapter mSectionsPagerAdapter;
-    public static TabLayout tabLayout;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private static ViewPager mViewPager;
-    public static TabHost tabHost;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Firebase Disk Persistence (Maintain state when offline)
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
-//        tabHost = (TabHost) findViewById(android.R.id.tabhost);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        toolbar.setTitle(R.string.app_name);
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        if(!isNetworkAvailable())
-        {
+        if (!isNetworkAvailable()) {
             toast = Toast.makeText(MainActivity.this, "Network is not available, please check your internet connection", Toast.LENGTH_LONG);
             toastView = toast.getView();
-            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
-            toast.show();
-        }
-        else
-        {
-            toast = Toast.makeText(MainActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG);
-            toastView = toast.getView();
-            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
             toast.show();
         }
 
-        Intent receiverIntent = getIntent();
-        receiverIntent.getIntExtra("theme", theme);
-
-        if(theme == 0)
-        {
-            setTheme(R.style.AppTheme);
-            toolbar.setTitleTextColor(0xFFFFFF);
-            theme++;
-        }
-        else
+        if(useDarkTheme)
         {
             setTheme(R.style.AppTheme_Dark);
             toolbar.setTitleTextColor(0x000000);
-            theme--;
+            useDarkTheme = true;
+        }
+        else
+        {
+            setTheme(R.style.AppTheme);
+            toolbar.setTitleTextColor(0xFFFFFF);
+            useDarkTheme = false;
         }
 
         // Create the adapter that will return a fragment for each of the three
@@ -150,9 +134,9 @@ public class MainActivity extends AppCompatActivity
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter
+    {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -160,15 +144,14 @@ public class MainActivity extends AppCompatActivity
         public int getCount() { return 1; } // Show 3 total pages.
 
         @Override
-        public Fragment getItem(int position) {
+        public Fragment getItem(int position)
+        {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch (position) {
+            switch (position)
+            {
                 case 0:
                     return new FragmentFriends();
-//                case 1:
-//                    return new FragmentFriends();
-//                    return new ChatActivity();
                 default:
                     return null;
             }

@@ -66,7 +66,22 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/edit_text_register_display_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/hint_display_name"
+                android:inputType="textPersonName"
+                android:textColor="@android:color/white"
+                android:textColorHint="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edit_text_register_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -81,7 +96,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/edit_text_register_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -111,11 +126,5 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="38dip"
-            android:background="@null" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

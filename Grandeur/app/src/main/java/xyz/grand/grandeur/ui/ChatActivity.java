@@ -1,15 +1,13 @@
 package xyz.grand.grandeur.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -27,7 +25,7 @@ import xyz.grand.grandeur.AboutActivity;
 import xyz.grand.grandeur.FireChatHelper.ExtraIntent;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.SettingsActivity;
+import xyz.grand.grandeur.settings.SettingsActivity;
 import xyz.grand.grandeur.adapter.MessageChatAdapter;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.ChatMessage;
@@ -36,13 +34,15 @@ import xyz.grand.grandeur.model.ChatMessage;
  * Created by Ferick Andrew on May 19, 2017.
  */
 
-public class ChatActivity extends Activity
+public class ChatActivity extends AppCompatActivity
 {
     private static final String TAG = ChatActivity.class.getSimpleName();
 
     protected ProgressBar mProgressBarForChat;
     RecyclerView mChatRecyclerView;
     EditText mUserMessageChatText;
+    Toolbar toolbar;
+
     private FirebaseAuth mAuth;
 
     private String mRecipientId;
@@ -50,6 +50,19 @@ public class ChatActivity extends Activity
     private MessageChatAdapter messageChatAdapter;
     private DatabaseReference messageChatDatabase;
     private ChildEventListener messageChatListener;
+
+    // Firebase Disk Persistence (Maintain state when offline)
+    private static FirebaseDatabase firebaseDatabase;
+
+    public static FirebaseDatabase getDatabase()
+    {
+        if (firebaseDatabase == null)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
+        return firebaseDatabase;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -60,6 +73,8 @@ public class ChatActivity extends Activity
         mProgressBarForChat = (ProgressBar) findViewById(R.id.progress_for_chat);
         mChatRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_chat);
         mUserMessageChatText = (EditText) findViewById(R.id.edit_text_message);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
+        setSupportActionBar(toolbar);
 
         // Set Auth Instance
         mAuth = FirebaseAuth.getInstance();
@@ -80,6 +95,15 @@ public class ChatActivity extends Activity
         mChatRecyclerView.setHasFixedSize(true);
         messageChatAdapter = new MessageChatAdapter(new ArrayList<ChatMessage>());
         mChatRecyclerView.setAdapter(messageChatAdapter);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                finish();
+            }
+        });
     }
 
     @Override

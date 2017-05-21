@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="settings.ProfileSettingsActivity"
+    tools:showIn="@layout/activity_profile_settings">
+
+    <RelativeLayout
+        android:layout_marginTop="56dp"
+        android:padding="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/edit_text_change_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Change your display name"/>
+
+            <Button
+                android:id="@+id/button_profile_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="Save Profile"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+</RelativeLayout>

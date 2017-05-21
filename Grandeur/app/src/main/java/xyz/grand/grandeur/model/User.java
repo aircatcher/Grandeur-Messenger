@@ -1,11 +1,13 @@
 package xyz.grand.grandeur.model;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 /**
  * Created by Ferick Andrew on 16/5/2017.
  */
 
+@IgnoreExtraProperties
 public class User {
 
     private String displayName;

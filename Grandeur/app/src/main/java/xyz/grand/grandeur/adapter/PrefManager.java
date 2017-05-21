@@ -1,4 +1,4 @@
-package xyz.grand.grandeur;
+package xyz.grand.grandeur.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -12,4 +12,6 @@
     <dimen name="standard_logo_size">100dp</dimen>
 
     <dimen name="connection_status_padding">8dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

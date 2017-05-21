@@ -34,13 +34,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import xyz.grand.grandeur.adapter.UsersChatAdapter;
 
 public class LoginActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener
 {
     public static ProgressDialog mProgressDialog;
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
+    private DatabaseReference userDatabase;
 
     CoordinatorLayout cl_login;
     Toolbar toolbar;
@@ -48,19 +53,32 @@ public class LoginActivity extends AppCompatActivity implements
     AutoCompleteTextView inputEmail;
     EditText inputPassword;
     Button btnLogin, btnLoginGoogle, btnSignup, btnResetPassword;
-
     Toast toast;
     View toastView;
+
+    public static String loginEmail, loginPwd;
+    private static String loginPassword;
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private GoogleApiClient mGoogleApiClient;
 //    private TextView mStatusTextView;
 
+    private static FirebaseDatabase firebaseDatabase;
+    public static FirebaseDatabase getDatabase()
+    {
+        if (firebaseDatabase == null)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
+        return firebaseDatabase;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -74,12 +92,12 @@ public class LoginActivity extends AppCompatActivity implements
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, (GoogleApiClient.OnConnectionFailedListener) this /* OnConnectionFailedListener */)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         // [END build_client]
 
-        if (auth.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -106,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements
         // [END customize_button]
 
         //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,23 +143,34 @@ public class LoginActivity extends AppCompatActivity implements
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = inputEmail.getText().toString();
-                final String password = inputPassword.getText().toString();
+                loginEmail = inputEmail.getText().toString();
+                loginPassword = inputPassword.getText().toString();
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(loginEmail)) {
+                    inputEmail.setError(getString(R.string.empty_email));
                     return;
                 }
 
-                else if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "Enter password!", Toast.LENGTH_SHORT).show();
+                if (!(android.util.Patterns.EMAIL_ADDRESS.matcher(loginEmail).matches()))
+                {
+                    inputEmail.setError("Incorrect email format");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(loginPassword)) {
+                    inputPassword.setError(getString(R.string.empty_password));
+                    return;
+                }
+
+                if (loginPassword.length() < 6) {
+                    inputPassword.setError(getString(R.string.minimum_password));
                     return;
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
 
                 //authenticate user
-                auth.signInWithEmailAndPassword(email, password)
+                mAuth.signInWithEmailAndPassword(loginEmail, loginPassword)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -151,21 +180,19 @@ public class LoginActivity extends AppCompatActivity implements
                                 progressBar.setVisibility(View.GONE);
                                 if (!task.isSuccessful()) {
                                     // there was an error
-                                    if (password.length() < 6) {
+                                    if (loginEmail.length() < 6) {
                                         inputPassword.setError(getString(R.string.minimum_password));
                                     } else {
                                         if(!isNetworkAvailable())
                                         {
-                                            toast = Toast.makeText(LoginActivity.this, "Network is not available, please check your internet connection", Toast.LENGTH_LONG);
+                                            toast = Toast.makeText(LoginActivity.this, R.string.disconnected, Toast.LENGTH_LONG);
                                             toastView = toast.getView();
-                                            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
                                             toast.show();
                                         }
                                         else
                                         {
                                             toast = Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG);
                                             toastView = toast.getView();
-                                            toastView.setBackgroundResource(R.drawable.toast_drawable_error);
                                             toast.show();
                                         }
                                     }
@@ -218,7 +245,7 @@ public class LoginActivity extends AppCompatActivity implements
             showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
                     hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
@@ -245,6 +272,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount googleAcct = result.getSignInAccount();
+            assert googleAcct != null;
             String signInResult = getString(R.string.signed_in_fmt, googleAcct.getDisplayName());
 
             for(int hsir = 0; hsir < 1; hsir++)
@@ -279,6 +307,12 @@ public class LoginActivity extends AppCompatActivity implements
                         // [END_EXCLUDE]
                     }
                 });
+
+        if(mAuth.getCurrentUser()!=null )
+        {
+            String userId = mAuth.getCurrentUser().getUid();
+            userDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
+        }
     }
     // [END signOut]
 

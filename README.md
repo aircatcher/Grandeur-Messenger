@@ -3,7 +3,11 @@
 Welcome to our app of Grandeur, a messaging app that is "simplicity" oriented.
 Currently only available on Android.
 
-![Friend Tab](screenshot/friendtab.png)<br/>
+![Login](screenshot/login.png)
+![Sign Up](screenshot/signup.png)
+![Forgot Password](screenshot/forgotpassword.png)
+![Friend List](screenshot/friendlist.png)
+![Settings](screenshot/settings.png)<br/>
 
 ## Getting Started
 

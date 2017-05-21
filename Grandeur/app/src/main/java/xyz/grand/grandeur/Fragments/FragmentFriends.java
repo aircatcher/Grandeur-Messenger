@@ -31,7 +31,8 @@ import xyz.grand.grandeur.FragmentViews.AddFriendActivity;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.MainActivity;
 import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.SettingsActivity;
+import xyz.grand.grandeur.settings.ProfileSettingsActivity;
+import xyz.grand.grandeur.settings.SettingsActivity;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
 
@@ -180,6 +181,12 @@ public class FragmentFriends extends Fragment
         {
             Intent addNewFriend = new Intent(getActivity(), AddFriendActivity.class);
             startActivity(addNewFriend);
+            return true;
+        }
+        if(item.getItemId() == R.id.action_profile_settings)
+        {
+            Intent profileSettings = new Intent(getActivity(), ProfileSettingsActivity.class);
+            startActivity(profileSettings);
             return true;
         }
         if(item.getItemId() == R.id.action_about)

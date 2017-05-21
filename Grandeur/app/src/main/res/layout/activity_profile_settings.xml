@@ -17,7 +17,7 @@
             android:orientation="vertical" >
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_settings"
+                android:id="@+id/toolbar_profile_settings"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -27,6 +27,6 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/include_content_settings"
-        layout="@layout/content_settings" />
+        android:id="@+id/include_content_profile_settings"
+        layout="@layout/content_profile_settings" />
 </android.support.design.widget.CoordinatorLayout>
