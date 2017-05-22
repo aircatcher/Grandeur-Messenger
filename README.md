@@ -1,5 +1,5 @@
 # Grandeur Messenger™
-
+[Available on aircatcher.GitHub.io](https://aircatcher.github.io/Grandeur-Messenger)<br/>
 Welcome to our app of Grandeur, a messaging app that is "simplicity" oriented.
 Currently only available on Android.
 
