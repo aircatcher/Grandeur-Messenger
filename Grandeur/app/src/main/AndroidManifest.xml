@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="MainActivity"
             android:label="@string/app_name" />
         <activity
             android:name=".LoginActivity"
@@ -54,12 +54,12 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="Settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName="MainActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="MainActivity" />
         </activity>
         <activity android:name=".AboutActivity" />
         <activity android:name=".FragmentViews.AddFriendActivity" />
@@ -77,7 +77,7 @@
         <activity
             android:name=".settings.ProfileSettingsActivity"
             android:label="@string/title_activity_profile_settings"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

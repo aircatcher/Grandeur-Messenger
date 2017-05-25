@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements
     private DatabaseReference userDatabase;
 
     CoordinatorLayout cl_login;
-    Toolbar toolbar;
     ProgressBar progressBar;
     AutoCompleteTextView inputEmail;
     EditText inputPassword;
@@ -106,7 +105,6 @@ public class LoginActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_login);
 
         cl_login = (CoordinatorLayout) findViewById(R.id.activity_login);
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         inputEmail = (AutoCompleteTextView) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
@@ -114,9 +112,6 @@ public class LoginActivity extends AppCompatActivity implements
         btnLoginGoogle = (Button) findViewById(R.id.btn_login_with_google);
         btnSignup = (Button) findViewById(R.id.btn_sign_up);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
-
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
 
         // [START customize_button]
         // Set the dimensions of the sign-in button.
@@ -221,8 +216,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

@@ -3,14 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.FriendList"
+    tools:context=".Fragments.FragmentFriends"
     android:id="@+id/fragment_friends">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:onClick="showProfileDialog"
         android:layout_above="@+id/adView_friendsTab" />
 
     <ProgressBar

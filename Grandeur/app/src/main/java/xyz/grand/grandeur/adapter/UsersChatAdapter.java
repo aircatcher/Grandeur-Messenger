@@ -20,6 +20,8 @@ import xyz.grand.grandeur.R;
 import xyz.grand.grandeur.model.User;
 import xyz.grand.grandeur.ui.ChatActivity;
 
+import static xyz.grand.grandeur.FireChatHelper.ExtraIntent.EXTRA_CHAT_REF;
+
 /**
  * Created by Ferick Andrew on 16/5/2017.
  */
@@ -107,6 +109,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
     /* ViewHolder for RecyclerView */
     public class ViewHolderUsers extends RecyclerView.ViewHolder implements View.OnClickListener
     {
+        int i = 1;
         private ImageView mUserAvatar;
         private TextView mUserDisplayName, mUserDisplayStatus;
         private TextView mStatusConnection;
@@ -156,7 +159,7 @@ public class UsersChatAdapter extends RecyclerView.Adapter<UsersChatAdapter.View
 
             // Start new activity
             mContextViewHolder.startActivity(chatSenderIntent);
-            chatSenderIntent.putExtra("chatView", chatView);
+            chatSenderIntent.putExtra(EXTRA_CHAT_REF, i);
         }
     }
 }

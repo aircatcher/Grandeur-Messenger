@@ -145,7 +145,7 @@ public class FriendList extends Activity
     }
 
     private void setUserOffline() {
-        if(mAuth.getCurrentUser()!=null ) {
+        if(mAuth.getCurrentUser() != null ) {
             String userId = mAuth.getCurrentUser().getUid();
             mUserRefDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
         }

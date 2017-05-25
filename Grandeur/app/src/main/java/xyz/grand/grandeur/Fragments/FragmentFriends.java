@@ -1,10 +1,15 @@
 package xyz.grand.grandeur.Fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -31,10 +37,10 @@ import xyz.grand.grandeur.FragmentViews.AddFriendActivity;
 import xyz.grand.grandeur.LoginActivity;
 import xyz.grand.grandeur.MainActivity;
 import xyz.grand.grandeur.R;
-import xyz.grand.grandeur.settings.ProfileSettingsActivity;
-import xyz.grand.grandeur.settings.SettingsActivity;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
+import xyz.grand.grandeur.settings.ProfileSettingsActivity;
+import xyz.grand.grandeur.settings.SettingsActivity;
 
 import static xyz.grand.grandeur.LoginActivity.mProgressDialog;
 
@@ -42,7 +48,7 @@ import static xyz.grand.grandeur.LoginActivity.mProgressDialog;
  * Created by Ferick Andrew on Mar 21, 2017.
  */
 
-public class FragmentFriends extends Fragment
+public class FragmentFriends extends Fragment implements DialogFragmentProfileDetails.DialogFragmentProfileDetailsListener
 {
     private static String TAG =  MainActivity.class.getSimpleName();
 
@@ -57,6 +63,18 @@ public class FragmentFriends extends Fragment
     private DatabaseReference mUserRefDatabase;
     private ChildEventListener mChildEventListener;
     private UsersChatAdapter mUsersChatAdapter;
+
+    // Firebase Disk Persistence (Maintain state when offline)
+    private static FirebaseDatabase firebaseDatabase;
+    public static FirebaseDatabase getDatabase()
+    {
+        if (firebaseDatabase == null)
+        {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
+        return firebaseDatabase;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,9 +96,13 @@ public class FragmentFriends extends Fragment
         mUserRefDatabase.keepSynced(true);
 
         // Set RecyclerView Adapter
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mUsersRecyclerView.getContext(), linearLayoutManager.getOrientation());
+
         mUsersChatAdapter = new UsersChatAdapter(getActivity(), new ArrayList<User>());
-        mUsersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mUsersRecyclerView.setLayoutManager(linearLayoutManager);
         mUsersRecyclerView.setHasFixedSize(true);
+        mUsersRecyclerView.addItemDecoration(dividerItemDecoration);
         mUsersRecyclerView.setAdapter(mUsersChatAdapter);
 
         // Set Users Key Lists
@@ -107,12 +129,22 @@ public class FragmentFriends extends Fragment
             }
         };
 
-        AdView mAdView = (AdView) fragView.findViewById(R.id.adView_friendsTab);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.bringToFront();
-        mAdView.loadAd(adRequest);
+        if(isNetworkAvailable())
+        {
+            AdView mAdView = (AdView) fragView.findViewById(R.id.adView_friendsTab);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.bringToFront();
+            mAdView.loadAd(adRequest);
+        }
 
         return fragView;
+    }
+
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void setUserData(FirebaseUser user) {
@@ -131,7 +163,7 @@ public class FragmentFriends extends Fragment
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // LoginActivity is a New Task
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // The old task when coming back to this activity should be cleared so we cannot come back to it.
         getActivity().finish();
-        startActivity(intent);
+        getActivity().startActivity(intent);
     }
 
     @Override
@@ -141,6 +173,7 @@ public class FragmentFriends extends Fragment
         showProgressDialog();
         showProgressBarForUsers();
         mAuth.addAuthStateListener(mAuthListener);
+        Toast.makeText(getActivity(), "Welcome back, " + mAuth, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -167,8 +200,9 @@ public class FragmentFriends extends Fragment
 
     private void setUserOffline()
     {
-        if(mAuth.getCurrentUser()!=null )
+        if(mAuth.getCurrentUser() != null )
         {
+            Toast.makeText(getActivity(), R.string.signed_out, Toast.LENGTH_LONG).show();
             String userId = mAuth.getCurrentUser().getUid();
             mUserRefDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
         }
@@ -180,25 +214,25 @@ public class FragmentFriends extends Fragment
         if(item.getItemId() == R.id.action_add_friend)
         {
             Intent addNewFriend = new Intent(getActivity(), AddFriendActivity.class);
-            startActivity(addNewFriend);
+            getActivity().startActivity(addNewFriend);
             return true;
         }
         if(item.getItemId() == R.id.action_profile_settings)
         {
             Intent profileSettings = new Intent(getActivity(), ProfileSettingsActivity.class);
-            startActivity(profileSettings);
+            getActivity().startActivity(profileSettings);
             return true;
         }
         if(item.getItemId() == R.id.action_about)
         {
             Intent intentAbout = new Intent(getActivity(), AboutActivity.class);
-            startActivity(intentAbout);
+            getActivity().startActivity(intentAbout);
             return true;
         }
         if(item.getItemId() == R.id.action_settings)
         {
             Intent intentSettings = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(intentSettings);
+            getActivity().startActivity(intentSettings);
             return true;
         }
         if(item.getItemId() == R.id.action_sign_out)
@@ -220,20 +254,31 @@ public class FragmentFriends extends Fragment
             mProgressBarForUsers.setVisibility(View.GONE);
     }
 
-    private void showProgressDialog() {
-        if (mProgressDialog == null) {
+    private void showProgressDialog()
+    {
+        if (mProgressDialog == null)
+        {
             mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setMessage(getActivity().getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
         }
         mProgressDialog.show();
     }
 
     private void hideProgressDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.hide();
-        }
     }
+
+    public void showProfileDialog(View view)
+    {
+        FragmentManager fragmentManager = getFragmentManager();
+        DialogFragmentProfileDetails profileDetails = new DialogFragmentProfileDetails();
+        profileDetails.setCancelable(true);
+        profileDetails.show(fragmentManager, "Input Dialog");
+    }
+    @Override
+    public void onFinishInputDialog(String profileName, String profileStatus) {}
 
     private ChildEventListener getChildEventListener()
     {
@@ -262,17 +307,16 @@ public class FragmentFriends extends Fragment
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.exists()) {
+            public void onChildChanged(DataSnapshot dataSnapshot, String s)
+            {
+                if(dataSnapshot.exists())
+                {
                     String userUid = dataSnapshot.getKey();
-                    if(!userUid.equals(mCurrentUserUid)) {
-
+                    if(!userUid.equals(mCurrentUserUid))
+                    {
                         User user = dataSnapshot.getValue(User.class);
-
                         int index = mUsersKeyList.indexOf(userUid);
-                        if(index > -1) {
-                            mUsersChatAdapter.changeUser(index, user);
-                        }
+                        if(index > -1) mUsersChatAdapter.changeUser(index, user);
                     }
                 }
             }
@@ -285,5 +329,4 @@ public class FragmentFriends extends Fragment
             public void onCancelled(DatabaseError databaseError) {}
         };
     }
-
 }

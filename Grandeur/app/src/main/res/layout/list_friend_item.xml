@@ -38,7 +38,7 @@
         tools:text="Display Name"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="26dp"
         android:layout_marginLeft="10dp"
         android:layout_toEndOf="@+id/avatar_circleView"
         android:layout_toRightOf="@+id/avatar_circleView" />
@@ -61,7 +61,7 @@
         android:layout_alignTop="@+id/avatar_circleView"
         android:paddingStart="5dp"
         android:paddingLeft="5dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="3dp"
         android:paddingEnd="@dimen/connection_status_padding"
         android:paddingRight="@dimen/connection_status_padding"
         android:layout_alignParentEnd="true"

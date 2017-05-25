@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,10 +22,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,7 +45,10 @@ import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
 
 public class SignupActivity extends AppCompatActivity {
@@ -48,7 +58,7 @@ public class SignupActivity extends AppCompatActivity {
     Uri imageUri;
     ProgressDialog progDial;
 
-    String userId, userStatus, displayName, signUpEmail, signUpPassword, connection;
+    String userStatus, displayName, signUpEmail, signUpPassword, connection, uid;
     int avatarId;
     long createdAt;
 
@@ -56,7 +66,8 @@ public class SignupActivity extends AppCompatActivity {
     private Button btnSignIn, btnSignUp, btnAddAvatar, btnResetPassword;
     public ImageView avatarPreview;
     private ProgressBar progressBar;
-    private FirebaseAuth auth;
+    private FirebaseAuth mAuth;
+    private DatabaseReference mUserRefDatabase;
 
     // Firebase Disk Persistence (Maintain state when offline)
     private DatabaseReference mDatabaseRef;
@@ -71,6 +82,27 @@ public class SignupActivity extends AppCompatActivity {
         }
         return firebaseDatabase;
     }
+
+//    final Firebase ref = new Firebase("https://grandeur-fb0de.firebaseio.com") {
+//    ref.authWithPassword("jenny@example.com", "correcthorsebatterystaple",
+//            new Firebase.AuthResultHandler() {
+//            @Override
+//            public void onAuthenticated(AuthData authData)
+//            {
+//                // Authentication just completed successfully :)
+//                Map<String, String> map = new HashMap<>();
+//                map.put("provider", authData.getProvider());
+//                if(authData.getProviderData().containsKey("displayName")) {
+//                    map.put("displayName", authData.getProviderData().get("displayName").toString());
+//                }
+//                ref.child("users").child(authData.getUid()).setValue(map);
+//            }
+//
+//            @Override
+//            public void onAuthenticationError(FirebaseError error) {
+//                // Something went wrong :(
+//            }
+//        });
 
     //creating reference to firebase storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -91,10 +123,14 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         setContentView(R.layout.activity_signup);
 
         //Get Firebase auth instance
-        auth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        // Set Users Database
+        mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("friendList");
 
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
@@ -128,7 +164,7 @@ public class SignupActivity extends AppCompatActivity {
                 signUpEmail = inputEmail.getText().toString().trim();
                 signUpPassword = inputPassword.getText().toString().trim();
 
-                if (avatarPreview.getDrawable().getConstantState() == SignupActivity.this.getResources().getDrawable(R.drawable.ic_person_black_24dp).getConstantState()) {
+                if (avatarPreview.getDrawable().getConstantState() == ContextCompat.getDrawable(SignupActivity.this, R.drawable.ic_person_black_24dp).getConstantState()) {
                     Toast.makeText(getApplicationContext(), "Your avatar cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -159,12 +195,27 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (imageUri != null) uploadAvatar();
+
                 progressBar.setVisibility(View.VISIBLE);
                 //create user
-                auth.createUserWithEmailAndPassword(signUpEmail, signUpPassword)
-                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(signUpEmail, signUpPassword)
+                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>()
+                        {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                mUserRefDatabase.setValue(i);
+                                do
+                                {
+                                    uid = String.valueOf(i);
+                                    i++;
+                                }
+                                while(mUserRefDatabase != null);
+
+                                mUserRefDatabase.setValue(i);
+                                mUserRefDatabase.child(uid).child("connection").setValue(UsersChatAdapter.ONLINE);
+                                writeNewUser(uid, displayName, userStatus, signUpEmail, signUpPassword, connection, avatarId, createdAt);
+
                                 Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the user. If sign in succeeds
@@ -174,7 +225,6 @@ public class SignupActivity extends AppCompatActivity {
                                     Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
-                                    writeNewUser(userId, displayName, userStatus, signUpEmail, connection, avatarId, createdAt);
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
@@ -184,29 +234,29 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void writeNewUser(String userId, String displayName, String userStatus, String email, String connection, int avatarId, long createdAt)
+    private void writeNewUser(String userId, String displayName, String userStatus, String email, String password, String connection, int avatarId, long createdAt)
     {
-        i = 1;
-        String uid = String.valueOf(i);
-        User user = new User(displayName, userStatus, email, connection, avatarId, createdAt);
-        mDatabaseRef.child("friendList").setValue(uid);
+        userId = String.valueOf(i);
+        displayName = etDisplayName.toString();
+        email = inputEmail.toString();
+        password = inputPassword.toString();
+        connection = UsersChatAdapter.ONLINE;
+        avatarId = avatarPreview.getId();
+
+        User user = new User(displayName, userStatus, email, password, connection, avatarId, createdAt);
+        mDatabaseRef.child("friendList").setValue(i);
         mDatabaseRef.child("friendList").child(userId).setValue(user);
-        i++;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = auth.getCurrentUser();
-        if (user != null) {
-
-        } else {
-            signInAnonymously();
-        }
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) signInAnonymously();
     }
 
     private void signInAnonymously() {
-        auth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
+        mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 // do your stuff
@@ -240,6 +290,34 @@ public class SignupActivity extends AppCompatActivity {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    private void uploadAvatar()
+    {
+        progDial = new ProgressDialog(SignupActivity.this);
+        progDial.setMessage("Uploading your avatar ...");
+        progDial.show();
+
+        avatarRef = storageRef.child("avatar/avatar" + i + ".jpg");
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("avatar" + i, "jpg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        avatarRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                progDial.dismiss();
+                // Local temp file has been created
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                progDial.dismiss();
+                // Handle any errors
+            }
+        });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -257,60 +335,40 @@ public class SignupActivity extends AppCompatActivity {
                 toastView.setBackgroundResource(R.drawable.toast_drawable_error);
                 toast.show();
             }
-            else
-            {
-                if(imageUri != null) {
-                    progDial = new ProgressDialog(this);
-                    progDial.setMessage("Uploading your avatar ...");
-                    progDial.show();
-
-                    // This function is continuously looping since the httpsReference is impossible for now.
-//                    while(!(imageUri == null)) {
-//                        imageUri = Uri.parse(storageRef.child("avatar" + i + ".jpg").toString());
-//                        i++;
+//            else
+//            {
+//                if(imageUri != null)
+//                {
+////                    // This function is continuously looping since the httpsReference is impossible for now.
+//////                    while(!(imageUri == null)) {
+//////                        imageUri = Uri.parse(storageRef.child("avatar" + i + ".jpg").toString());
+//////                        i++;
+//////                    }
+////                    i = 5;
+////
+//                    avatarRef = storageRef.child("avatar/avatar" + i + ".jpg");
+//                    File localFile = null;
+//                    try {
+//                        localFile = File.createTempFile("avatar" + i, "jpg");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
 //                    }
-                    i = 5;
-
-                    avatarRef = storageRef.child("avatar/avatar" + i + ".jpg");
-                    File localFile = null;
-                    try {
-                        localFile = File.createTempFile("avatar" + i, "jpg");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    avatarRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            // Local temp file has been created
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle any errors
-                        }
-                    });
-
-                    // Uploads the image to the Firebase Storage
-                    UploadTask uploadTask = avatarRef.putFile(imageUri);
-
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progDial.dismiss();
-//                        Toast.makeText(SignupActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progDial.dismiss();
-                            Toast.makeText(SignupActivity.this, "Image fails to upload to database (" + e + ")", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                else {
-                    Toast.makeText(SignupActivity.this, "Select an image", Toast.LENGTH_SHORT).show();
-                }
-            }
+//                    avatarRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                            // Local temp file has been created
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                            // Handle any errors
+//                        }
+//                    });
+//                }
+//                else {
+//                    Toast.makeText(SignupActivity.this, "Select an image", Toast.LENGTH_SHORT).show();
+//                }
+//            }
         }
     }
 }

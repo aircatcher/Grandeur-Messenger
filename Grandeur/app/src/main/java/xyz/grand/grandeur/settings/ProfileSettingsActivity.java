@@ -26,7 +26,7 @@ public class ProfileSettingsActivity extends AppCompatActivity
     private Button buttonSaveProfile;
 
     Editable changeName;
-    String userId, displayName, userStatus, email, connection;
+    String userId, displayName, userStatus, email, password, connection;
     int avatarId;
     long createdAt;
 
@@ -60,14 +60,14 @@ public class ProfileSettingsActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 changeName = changeDisplayName.getText();
-                updateUser(displayName, userStatus, email, connection, avatarId, createdAt);
+                updateUser(displayName, userStatus, email, password, connection, avatarId, createdAt);
             }
         });
     }
 
-    private void updateUser(String displayName, String userStatus, String email, String connection, int avatarId, long createdAt)
+    private void updateUser(String displayName, String userStatus, String email, String password, String connection, int avatarId, long createdAt)
     {
-        User user = new User(displayName, userStatus, email, connection, avatarId, createdAt);
+        User user = new User(displayName, userStatus, email, password, connection, avatarId, createdAt);
         mUserRefDatabase.child("displayName").setValue(changeName);
     }
 }

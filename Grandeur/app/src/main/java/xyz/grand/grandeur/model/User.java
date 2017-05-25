@@ -10,10 +10,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class User {
 
-    private String displayName;
-    private String userStatus;
-    private String email;
-    private String connection;
+    private String displayName, userStatus, email, password, connection;
     private int avatarId;
     private long createdAt;
 
@@ -22,10 +19,11 @@ public class User {
     public User() {
     }
 
-    public User(String displayName, String userStatus, String email, String connection, int avatarId, long createdAt) {
+    public User(String displayName, String userStatus, String email, String password, String connection, int avatarId, long createdAt) {
         this.displayName = displayName;
         this.userStatus = userStatus;
         this.email = email;
+        this.password = password;
         this.connection = connection;
         this.avatarId = avatarId;
         this.createdAt = createdAt;
@@ -53,6 +51,10 @@ public class User {
     private String getUserEmail() {
         //Log.e("user email  ", userEmail);
         return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getDisplayName() {

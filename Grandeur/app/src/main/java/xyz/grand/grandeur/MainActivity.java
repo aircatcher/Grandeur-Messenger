@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -30,6 +30,8 @@ import xyz.grand.grandeur.Fragments.FragmentFriends;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
 
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_NO;
+import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES;
 import static xyz.grand.grandeur.settings.SettingsActivity.useDarkTheme;
 
 public class MainActivity extends AppCompatActivity
@@ -44,20 +46,8 @@ public class MainActivity extends AppCompatActivity
      */
     private static String TAG =  MainActivity.class.getSimpleName();
 
-    // Firebase Disk Persistence (Maintain state when offline)
-    private static FirebaseDatabase firebaseDatabase;
-    public static FirebaseDatabase getDatabase()
-    {
-        if (firebaseDatabase == null)
-        {
-            firebaseDatabase = FirebaseDatabase.getInstance();
-            firebaseDatabase.setPersistenceEnabled(true);
-        }
-        return firebaseDatabase;
-    }
-
-    Toolbar toolbar;
-    Toast toast;
+    private Toolbar toolbar;
+    private Toast toast;
     View toastView;
     @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
     @BindView(R.id.recycler_view_users) RecyclerView mUsersRecyclerView;
@@ -78,30 +68,33 @@ public class MainActivity extends AppCompatActivity
     private static ViewPager mViewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+        {
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
+            setTheme(R.style.AppTheme_Dark);
+            useDarkTheme = true;
+        }
+        else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO)
+        {
+            AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO);
+            setTheme(R.style.AppTheme);
+            useDarkTheme = false;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
 
-        if (!isNetworkAvailable()) {
-            toast = Toast.makeText(MainActivity.this, "Network is not available, please check your internet connection", Toast.LENGTH_LONG);
+        if (!isNetworkAvailable())
+        {
+            toast = Toast.makeText(MainActivity.this, R.string.disconnected, Toast.LENGTH_LONG);
             toastView = toast.getView();
             toast.show();
-        }
-
-        if(useDarkTheme)
-        {
-            setTheme(R.style.AppTheme_Dark);
-            toolbar.setTitleTextColor(0x000000);
-            useDarkTheme = true;
-        }
-        else
-        {
-            setTheme(R.style.AppTheme);
-            toolbar.setTitleTextColor(0xFFFFFF);
-            useDarkTheme = false;
         }
 
         // Create the adapter that will return a fragment for each of the three
@@ -123,9 +116,9 @@ public class MainActivity extends AppCompatActivity
 //        tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF5252"));
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
@@ -151,6 +144,7 @@ public class MainActivity extends AppCompatActivity
             switch (position)
             {
                 case 0:
+                    toolbar.setTitle(R.string.app_name);
                     return new FragmentFriends();
                 default:
                     return null;
@@ -159,7 +153,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         // Inflate the menu; this adds items to the action bar if it is present.
 //        int tabPosition = tabLayout.getSelectedTabPosition();
 
@@ -173,46 +168,49 @@ public class MainActivity extends AppCompatActivity
         mProgressBarForUsers.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBarForUsers(){
-        if(mProgressBarForUsers.getVisibility()==View.VISIBLE) {
+    private void hideProgressBarForUsers()
+    {
+        if(mProgressBarForUsers.getVisibility()==View.VISIBLE)
             mProgressBarForUsers.setVisibility(View.GONE);
-        }
     }
 
-    private ChildEventListener getChildEventListener() {
-        return new ChildEventListener() {
+    private ChildEventListener getChildEventListener()
+    {
+        return new ChildEventListener()
+        {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                if(dataSnapshot.exists()){
-
+            public void onChildAdded(DataSnapshot dataSnapshot, String s)
+            {
+                if(dataSnapshot.exists())
+                {
                     String userUid = dataSnapshot.getKey();
 
-                    if(dataSnapshot.getKey().equals(mCurrentUserUid)){
+                    if(dataSnapshot.getKey().equals(mCurrentUserUid))
+                    {
                         User currentUser = dataSnapshot.getValue(User.class);
                         mUsersChatAdapter.setCurrentUserInfo(userUid, currentUser.getEmail(), currentUser.getCreatedAt());
-                    }else {
+                    }
+                    else
+                    {
                         User recipient = dataSnapshot.getValue(User.class);
                         recipient.setRecipientId(userUid);
                         mUsersKeyList.add(userUid);
                         mUsersChatAdapter.refill(recipient);
                     }
                 }
-
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.exists()) {
+            public void onChildChanged(DataSnapshot dataSnapshot, String s)
+            {
+                if(dataSnapshot.exists())
+                {
                     String userUid = dataSnapshot.getKey();
-                    if(!userUid.equals(mCurrentUserUid)) {
-
+                    if(!userUid.equals(mCurrentUserUid))
+                    {
                         User user = dataSnapshot.getValue(User.class);
-
                         int index = mUsersKeyList.indexOf(userUid);
-                        if(index > -1) {
-                            mUsersChatAdapter.changeUser(index, user);
-                        }
+                        if(index > -1) mUsersChatAdapter.changeUser(index, user);
                     }
 
                 }

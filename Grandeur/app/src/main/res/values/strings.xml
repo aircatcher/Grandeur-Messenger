@@ -21,7 +21,8 @@
     <string name="slide_4_title">World Travel</string>
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
-    <!-- Strings related to Chat Fragment -->
+    <!-- Strings related to Chat-->
+    <string name="action_delete_chat">Delete this chat</string>
     <string name="timeline_hint">Describe your moment …</string>
     <string name="timeline_url_hint">Add a URL  >>></string>
     <string name="btn_add_url">Add URL</string>
