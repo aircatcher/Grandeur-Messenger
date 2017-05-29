@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/usage_access_reminder"
+    tools:context="xyz.grand.grandeur.settings.RequestForAppUsageAccessActivity">
+
+    <ImageView
+        android:id="@+id/usage_access_reminder_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/usage_access"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/button_proceed_enable_usage_access"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proceed"
+        android:layout_marginStart="105dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignBaseline="@+id/button_cancel_enable_usage_access"
+        android:layout_alignBottom="@+id/button_cancel_enable_usage_access"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/button_cancel_enable_usage_access"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:background="@color/colorAccent"
+        android:layout_below="@id/usage_access_reminder_image"
+        android:layout_toRightOf="@id/button_proceed_enable_usage_access"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

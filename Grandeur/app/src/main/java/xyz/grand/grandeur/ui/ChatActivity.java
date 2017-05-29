@@ -1,13 +1,18 @@
 package xyz.grand.grandeur.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +21,7 @@ import android.widget.ProgressBar;
 
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,7 +59,7 @@ public class ChatActivity extends AppCompatActivity
     Toolbar toolbar;
 
     private FirebaseAuth mAuth;
-
+    private FirebaseUser mUser;
     private String mRecipientId;
     private String mCurrentUserId;
     private MessageChatAdapter messageChatAdapter;
@@ -85,12 +91,25 @@ public class ChatActivity extends AppCompatActivity
         btnSendMessage = (Button) findViewById(R.id.btn_send_message);
         toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(Color.BLACK);
 
         // Set Auth Instance
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        else
+        {
+            mUser = mAuth.getCurrentUser();
+        }
 
         // Set Database Instance
+        if( FirebaseDatabase.getInstance().getReference().child("extraChatRef") == null )
+        {
+            messageChatDatabase = FirebaseDatabase.getInstance().getReference();
+            messageChatDatabase.child("extraChatRef").push();
+        }
         messageChatDatabase = FirebaseDatabase.getInstance().getReference().child("extraChatRef");
         messageChatDatabase.push();
 
@@ -132,6 +151,24 @@ public class ChatActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if(item.getItemId() == R.id.action_delete_chat)
+        {
+            eraseChatFromDatabase();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onStart()
     {
         super.onStart();
@@ -145,7 +182,7 @@ public class ChatActivity extends AppCompatActivity
                 {
                     ChatMessage newMessage = dataSnapshot.getValue(ChatMessage.class);
 
-                    if(newMessage.getSender().equals(mCurrentUserId))
+                    if( newMessage.getSender() == mUser.getUid() )
                         newMessage.setRecipientOrSenderStatus(MessageChatAdapter.SENDER);
                     else
                         newMessage.setRecipientOrSenderStatus(MessageChatAdapter.RECIPIENT);
@@ -204,6 +241,28 @@ public class ChatActivity extends AppCompatActivity
 //        }
 //    }
 
+    private void eraseChatFromDatabase()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("This chat will be erased completely").setTitle("Are you sure?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        messageChatDatabase.removeValue();
+                        finish();
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                    }
+                });
+        // Create the AlertDialog object and return it
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     private void goToLogin()
     {
         Intent intent = new Intent(ChatActivity.this, LoginActivity.class);
@@ -227,19 +286,6 @@ public class ChatActivity extends AppCompatActivity
             String userId = mAuth.getCurrentUser().getUid();
             messageChatDatabase.child(userId).child("connection").setValue(UsersChatAdapter.OFFLINE);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if(item.getItemId() == R.id.action_delete_chat)
-        {
-            messageChatDatabase.child(String.valueOf(chatCount)).removeValue();
-            chatCount--;
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void showProgressBarForUsers(){

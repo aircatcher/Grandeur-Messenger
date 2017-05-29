@@ -1,31 +1,31 @@
 package xyz.grand.grandeur.settings;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.andrognito.pinlockview.IndicatorDots;
-import com.andrognito.pinlockview.PinLockListener;
-import com.andrognito.pinlockview.PinLockView;
+import com.goodiebag.pinview.Pinview;
 
+import xyz.grand.grandeur.MainActivity;
 import xyz.grand.grandeur.R;
 
 public class PinLockSetupActivity extends AppCompatActivity
 {
-    public static final String TAG = "";
-    private PinLockView mPinLockView;
-    private IndicatorDots mIndicatorDots;
+    private Pinview mPinView;
     private Toolbar toolbar;
+    public static int pinLockLength;
+    public static String pinLockValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_lock_setup);
+        mPinView = (Pinview) findViewById(R.id.pin_lock_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar_pin_lock_setup);
 
         Toast.makeText(getApplicationContext(), "PIN Lock is currently not working just yet", Toast.LENGTH_LONG).show();
@@ -40,28 +40,24 @@ public class PinLockSetupActivity extends AppCompatActivity
             }
         });
 
-        mPinLockView = (PinLockView) findViewById(R.id.pin_lock_view);
-        mPinLockView.setPinLockListener(mPinLockListener);
+        mPinView.setPinViewEventListener(new Pinview.PinViewEventListener()
+        {
+            @Override
+            public void onDataEntered(Pinview pinview, boolean b)
+            {
+                if(pinview.getPinLength() == 4)
+                {
+                    pinLockLength = pinview.getPinLength();
+                    pinLockValue = pinview.getValue();
 
-        mIndicatorDots = (IndicatorDots) findViewById(R.id.indicator_dots);
-        mPinLockView.attachIndicatorDots(mIndicatorDots);
+                    Intent pl_send = new Intent(PinLockSetupActivity.this, SettingsActivity.class);
+                    Intent pl_sendToMain = new Intent(PinLockSetupActivity.this, MainActivity.class);
+                    pl_send.putExtra("pinLockValue", pinLockValue);
+                    pl_sendToMain.putExtra("pinLockValue", pinLockValue);
+
+                    finish();
+                }
+            }
+        });
     }
-
-    private PinLockListener mPinLockListener = new PinLockListener()
-    {
-        @Override
-        public void onComplete(String pin) {
-            Log.d(TAG, "Pin complete: " + pin);
-        }
-
-        @Override
-        public void onEmpty() {
-            Log.d(TAG, "Pin empty");
-        }
-
-        @Override
-        public void onPinChange(int pinLength, String intermediatePin) {
-            Log.d(TAG, "Pin changed, new length " + pinLength + " with intermediate pin " + intermediatePin);
-        }
-    };
 }

@@ -7,6 +7,8 @@ Currently only available on Android.
 ![Sign Up](screenshot/signup.png)
 ![Forgot Password](screenshot/forgotpassword.png)
 ![Friend List](screenshot/friendview.png)
+![Chat](screenshot/chat.png)
+![Delete Chat](screenshot/deletechatpopup.png)
 ![Settings](screenshot/settings.png)<br/>
 
 ## Getting Started

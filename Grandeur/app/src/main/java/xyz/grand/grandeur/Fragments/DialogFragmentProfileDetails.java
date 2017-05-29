@@ -4,7 +4,9 @@ package xyz.grand.grandeur.Fragments;
  * Created by Ferick Andrew on May 21, 2017.
  */
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -41,7 +43,6 @@ public class DialogFragmentProfileDetails extends DialogFragment
 
         //---show the keyboard automatically
         profileName.requestFocus();
-        getDialog().getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         //---set the title for the dialog
         getDialog().setTitle(DialogboxTitle);
@@ -51,10 +52,11 @@ public class DialogFragmentProfileDetails extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        // request a window without the title
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
+        // Get the layout inflater
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        return builder.create();
     }
 }

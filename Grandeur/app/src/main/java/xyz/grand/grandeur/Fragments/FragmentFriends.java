@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DividerItemDecoration;
@@ -54,6 +56,7 @@ public class FragmentFriends extends Fragment implements DialogFragmentProfileDe
 
     protected ProgressBar mProgressBarForUsers;
     protected RecyclerView mUsersRecyclerView;
+    private Snackbar welcomeSnackbar;
 
     private String mCurrentUserUid;
     private List<String>  mUsersKeyList;
@@ -105,6 +108,13 @@ public class FragmentFriends extends Fragment implements DialogFragmentProfileDe
         mUsersRecyclerView.addItemDecoration(dividerItemDecoration);
         mUsersRecyclerView.setAdapter(mUsersChatAdapter);
 
+        mUsersRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogFragment = new DialogFragmentProfileDetails();
+                dialogFragment.show(getFragmentManager(), "missiles");
+            }
+        });
         // Set Users Key Lists
         mUsersKeyList = new ArrayList<>();
 
@@ -114,18 +124,14 @@ public class FragmentFriends extends Fragment implements DialogFragmentProfileDe
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 hideProgressDialog();
                 hideProgressBarForUsers();
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                FirebaseUser mUser = firebaseAuth.getCurrentUser();
 
-                if (user != null)
+                if (mUser != null)
                 {
-                    setUserData(user);
+                    setUserData(mUser);
                     queryAllUsers();
                 }
-                else
-                {
-                    // User is signed out
-                    goToLogin();
-                }
+                else { goToLogin(); } // User is signed out
             }
         };
 
@@ -173,7 +179,6 @@ public class FragmentFriends extends Fragment implements DialogFragmentProfileDe
         showProgressDialog();
         showProgressBarForUsers();
         mAuth.addAuthStateListener(mAuthListener);
-        Toast.makeText(getActivity(), "Welcome back, " + mAuth, Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -67,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
     public ImageView avatarPreview;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     private DatabaseReference mUserRefDatabase;
 
     // Firebase Disk Persistence (Maintain state when offline)
@@ -128,6 +129,11 @@ public class SignupActivity extends AppCompatActivity {
 
         //Get Firebase auth instance
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
 
         // Set Users Database
         mUserRefDatabase = FirebaseDatabase.getInstance().getReference().child("friendList");

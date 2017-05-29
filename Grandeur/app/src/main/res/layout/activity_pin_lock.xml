@@ -6,40 +6,19 @@
     android:layout_height="match_parent"
     tools:context="xyz.grand.grandeur.settings.PinLockSetupActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            android:orientation="vertical" >
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_pin_lock_setup"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:titleTextColor="@color/black"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        </android.support.design.widget.AppBarLayout>
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_marginTop="56dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/title_pinlock_setup"
+            android:id="@+id/title_pinlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Setup PIN"
+            android:text="Enter PIN"
             android:textColor="@color/black"
             android:layout_marginTop="45dp"
-            android:paddingLeft="125dp"
+            android:paddingLeft="128dp"
             android:paddingRight="125dp"
             android:paddingEnd="125dp"
             android:textSize="30sp"
@@ -47,12 +26,12 @@
             tools:layout_editor_absoluteY="93dp" />
 
         <TextView
-            android:id="@+id/subtitle_pinlock_setup"
+            android:id="@+id/subtitle_pinlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter your PIN below"
             android:textColor="@color/grey"
-            android:layout_below="@id/title_pinlock_setup"
+            android:layout_below="@id/title_pinlock"
             android:layout_marginTop="5dp"
             android:paddingLeft="122dp"
             android:paddingRight="125dp"
@@ -66,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="45dp"
-            android:layout_below="@id/subtitle_pinlock_setup"
+            android:layout_below="@id/subtitle_pinlock"
             app:pinWidth="40dp"
             app:pinHeight="40dp"
             app:pinLength="4"

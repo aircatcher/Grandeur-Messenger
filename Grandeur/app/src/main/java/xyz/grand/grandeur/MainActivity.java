@@ -1,9 +1,13 @@
 package xyz.grand.grandeur;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,9 +34,12 @@ import butterknife.BindView;
 import xyz.grand.grandeur.Fragments.FragmentFriends;
 import xyz.grand.grandeur.adapter.UsersChatAdapter;
 import xyz.grand.grandeur.model.User;
+import xyz.grand.grandeur.ui.PinLockActivity;
 
 import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_NO;
 import static android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES;
+import static xyz.grand.grandeur.settings.PinLockSetupActivity.pinLockValue;
+import static xyz.grand.grandeur.settings.SettingsActivity.DARK_MODE;
 import static xyz.grand.grandeur.settings.SettingsActivity.useDarkTheme;
 
 public class MainActivity extends AppCompatActivity
@@ -48,14 +56,16 @@ public class MainActivity extends AppCompatActivity
 
     private Toolbar toolbar;
     private Toast toast;
+    private Snackbar welcomeSnackbar;
     View toastView;
     @BindView(R.id.progress_bar_users) ProgressBar mProgressBarForUsers;
     @BindView(R.id.recycler_view_users) RecyclerView mUsersRecyclerView;
 
-    private String mCurrentUserUid;
+    private String mCurrentUserUid, currentUserName;
     private List<String> mUsersKeyList;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mUserRefDatabase;
     private ChildEventListener mChildEventListener;
@@ -70,7 +80,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES)
+        String darkMode = getIntent().getStringExtra(DARK_MODE);
+        if (darkMode == "1")
         {
             AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES);
             setTheme(R.style.AppTheme_Dark);
@@ -86,6 +97,36 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+            {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null)
+                {
+                    // User is signed in
+                    mUser = user;
+                    Toast.makeText(MainActivity.this, "USER ID\n" + mUser.getUid(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        if(mAuth.getCurrentUser() == null)
+        {
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        else
+        {
+            mUser = mAuth.getCurrentUser();
+
+            View mainContent = findViewById(R.id.main_content);
+            welcomeSnackbar = Snackbar.make(mainContent, "Welcome, " + mUser.getEmail(), Snackbar.LENGTH_LONG);
+            welcomeSnackbar.show();
+        }
+
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -97,6 +138,16 @@ public class MainActivity extends AppCompatActivity
             toast.show();
         }
 
+        if (savedInstanceState == null)
+        {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) pinLockValue = null;
+            else pinLockValue = extras.getString("pinLockValue");
+        }
+        else pinLockValue = (String) savedInstanceState.getSerializable("pinLockValue");
+
+        if(pinLockValue != null) startActivity(new Intent(MainActivity.this, PinLockActivity.class));
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -104,16 +155,6 @@ public class MainActivity extends AppCompatActivity
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-//        tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(mViewPager);
-
-        // Tabs icons, texts, and colors
-//        tabLayout.getTabAt(0).setText("FRIENDS");
-//        tabLayout.getTabAt(0).setIcon(R.drawable.ic_supervisor_account_black_24dp);
-//        tabLayout.getTabAt(1).setText("CHAT");
-//        tabLayout.getTabAt(1).setIcon(R.drawable.ic_question_answer_black_24dp);
-//        tabLayout.setTabTextColors(Color.parseColor("#000000"), Color.parseColor("#FF5252"));
     }
 
     private boolean isNetworkAvailable()
@@ -145,6 +186,7 @@ public class MainActivity extends AppCompatActivity
             {
                 case 0:
                     toolbar.setTitle(R.string.app_name);
+                    welcomeSnackbar.show();
                     return new FragmentFriends();
                 default:
                     return null;
@@ -212,7 +254,6 @@ public class MainActivity extends AppCompatActivity
                         int index = mUsersKeyList.indexOf(userUid);
                         if(index > -1) mUsersChatAdapter.changeUser(index, user);
                     }
-
                 }
             }
 
