@@ -68,7 +68,6 @@ public class ChatActivity extends AppCompatActivity
 
     // Firebase Disk Persistence (Maintain state when offline)
     private static FirebaseDatabase firebaseDatabase;
-
     public static FirebaseDatabase getDatabase()
     {
         if (firebaseDatabase == null)
@@ -99,10 +98,7 @@ public class ChatActivity extends AppCompatActivity
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
-        else
-        {
-            mUser = mAuth.getCurrentUser();
-        }
+        else mUser = mAuth.getCurrentUser();
 
         // Set Database Instance
         if( FirebaseDatabase.getInstance().getReference().child("extraChatRef") == null )
@@ -206,10 +202,10 @@ public class ChatActivity extends AppCompatActivity
 
         messageChatDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                for (DataSnapshot snap: dataSnapshot.getChildren())
                     chatCount = Log.e(snap.getKey(),snap.getChildrenCount() + "");
-                }
             }
 
             @Override
@@ -225,21 +221,7 @@ public class ChatActivity extends AppCompatActivity
         if(messageChatListener != null)
             messageChatDatabase.removeEventListener(messageChatListener);
         messageChatAdapter.cleanUp();
-
     }
-
-//    @OnClick(R.id.btn_send_message)
-//    public void btnSendMsgListener(View sendButton)
-//    {
-//        String senderMessage = mUserMessageChatText.getText().toString().trim();
-//
-//        if(!senderMessage.isEmpty())
-//        {
-//            ChatMessage newMessage = new ChatMessage(senderMessage,mCurrentUserId,mRecipientId);
-//            messageChatDatabase.push().setValue(newMessage);
-//            mUserMessageChatText.setText("");
-//        }
-//    }
 
     private void eraseChatFromDatabase()
     {
@@ -255,9 +237,7 @@ public class ChatActivity extends AppCompatActivity
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener()
                 {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                    }
+                    public void onClick(DialogInterface dialog, int id) {}
                 });
         // Create the AlertDialog object and return it
         AlertDialog dialog = builder.create();
