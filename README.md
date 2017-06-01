@@ -1,4 +1,7 @@
 # Grandeur Messenger™
+
+[![CircleCI](https://circleci.com/gh/aircatcher/Grandeur-Messenger.svg?style=svg)](https://circleci.com/gh/aircatcher/Grandeur-Messenger)
+
 [Available on aircatcher.GitHub.io](https://aircatcher.github.io/Grandeur-Messenger)<br/>
 Welcome to our app of Grandeur, a messaging app that is "simplicity" oriented.
 Currently only available on Android.
